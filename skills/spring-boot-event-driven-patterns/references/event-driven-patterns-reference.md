@@ -270,26 +270,6 @@ public void publishPendingEvents() {
 </dependency>
 ```
 
-## Gradle Dependencies
-
-```gradle
-dependencies {
-    // Local Events
-    implementation 'org.springframework:spring-context'
-
-    // Kafka
-    implementation 'org.springframework.kafka:spring-kafka'
-
-    // Spring Cloud Stream
-    implementation 'org.springframework.cloud:spring-cloud-stream:4.0.4'
-    implementation 'org.springframework.cloud:spring-cloud-stream-binder-kafka:4.0.4'
-
-    // Jackson
-    implementation 'com.fasterxml.jackson.core:jackson-databind'
-    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
-}
-```
-
 ## Event Ordering Guarantees
 
 ### Kafka Partition Key Strategy

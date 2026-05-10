@@ -8,7 +8,7 @@ description: Validates Java project dependencies with vulnerability scanning, li
 
 ## Overview
 
-Perform comprehensive dependency analysis for Java/Maven/Gradle projects to identify security vulnerabilities, licensing
+Perform comprehensive dependency analysis for Java/Maven projects to identify security vulnerabilities, licensing
 issues, outdated packages, and supply chain risks with actionable remediation strategies.
 
 Validates Java project dependencies with vulnerability scanning, license compliance, and supply chain security analysis.
@@ -57,11 +57,9 @@ $3 specifies the output format (optional - defaults to `report`):
 - If not available: Use `sdd-rest-java:java-security-expert` or fallback to `general-purpose` agent
 ## Context
 
-- Build system: !`ls -la | grep -E "(pom\.xml|build\.gradle|build\.gradle\.kts)"`
-- Current dependencies: !
-  `if [ -f pom.xml ]; then mvn dependency:list 2>/dev/null | head -30; elif [ -f build.gradle ]; then ./gradlew dependencies 2>/dev/null | head -30; fi`
-- Dependency tree depth: !
-  `if [ -f pom.xml ]; then mvn dependency:tree 2>/dev/null | wc -l; elif [ -f build.gradle ]; then ./gradlew dependencies 2>/dev/null | wc -l; fi`
+- Build system: !`ls -la | grep -E "pom\.xml"`
+- Current dependencies: !`mvn dependency:list 2>/dev/null | head -30`
+- Dependency tree depth: !`mvn dependency:tree 2>/dev/null | wc -l`
 
 ## Audit Analysis Process
 
@@ -85,25 +83,9 @@ mvn dependency:analyze -DignoreNonCompile=true
 mvn dependency:resolve -Dclassifier=sources
 ```
 
-**Gradle Dependency Analysis**
-
-```bash
-# All configurations
-./gradlew dependencies > gradle-dependencies.txt
-
-# Specific configuration
-./gradlew dependencies --configuration compileClasspath
-
-# Dependency insight for specific library
-./gradlew dependencyInsight --dependency org.springframework.boot:spring-boot-starter
-
-# Build scan for analysis
-./gradlew build --scan
-```
-
 **Dependency Classification**
 
-- **Direct dependencies**: Explicitly declared in POM/build.gradle
+- **Direct dependencies**: Explicitly declared in POM
 - **Transitive dependencies**: Required by direct dependencies
 - **Provided/Compile**: Runtime classpath dependencies
 - **Test dependencies**: Test scope only
@@ -130,18 +112,6 @@ mvn org.owasp:dependency-check-maven:check \
   -Dartifact=org.springframework.boot:spring-boot-starter-web:3.2.0
 ```
 
-**OWASP Dependency-Check (Gradle)**
-
-```bash
-# Apply plugin and run
-./gradlew dependencyCheckAnalyze
-
-# With custom configuration
-./gradlew dependencyCheckAnalyze \
-  --info \
-  -PfailBuildOnCVSS=7
-```
-
 **Snyk Security Scanning**
 
 ```bash
@@ -150,9 +120,6 @@ snyk test --all-projects
 
 # Test with Maven
 snyk test --file=pom.xml
-
-# Test with Gradle
-snyk test --file=build.gradle
 
 # Generate JSON report
 snyk test --json > snyk-report.json
@@ -226,19 +193,6 @@ mvn license:add-third-party \
 mvn project-info-reports:dependencies
 ```
 
-**License Detection (Gradle)**
-
-```bash
-# Using license plugin
-./gradlew downloadLicenses
-
-# Generate license report
-./gradlew generateLicenseReport
-
-# Check license compatibility
-./gradlew checkLicense
-```
-
 **License Compatibility Matrix**
 
 Common Java dependency licenses:
@@ -291,22 +245,6 @@ mvn versions:use-latest-versions -DallowMajorUpdates=false
 
 # Dependency updates report
 mvn versions:dependency-updates-report
-```
-
-**Gradle Versions Plugin**
-
-```bash
-# Check for dependency updates
-./gradlew dependencyUpdates
-
-# Show only latest versions
-./gradlew dependencyUpdates -Drevision=release
-
-# JSON report
-./gradlew dependencyUpdates -DoutputFormatter=json
-
-# Check specific configuration
-./gradlew dependencyUpdates --configuration compileClasspath
 ```
 
 **Update Priority Scoring**
@@ -399,10 +337,6 @@ Analyze impact on build and runtime:
 ```bash
 # List all JARs with sizes
 find ~/.m2/repository -name "*.jar" -exec du -sh {} \; | sort -rh | head -20
-
-# Gradle build scan
-./gradlew build --scan
-# Check "Dependencies" section for size breakdown
 
 # Analyze specific dependency size
 mvn dependency:tree -Dincludes=${GROUP_ID}:${ARTIFACT_ID} -Dverbose
@@ -510,41 +444,6 @@ else
 fi
 ```
 
-**Gradle Auto-Fix Script**
-
-```bash
-#!/bin/bash
-# gradle-dependency-fix.sh
-
-echo "🔧 Gradle Dependency Auto-Remediation"
-echo "======================================"
-
-# Backup build files
-cp build.gradle build.gradle.backup.$(date +%Y%m%d_%H%M%S)
-[ -f gradle/libs.versions.toml ] && cp gradle/libs.versions.toml gradle/libs.versions.toml.backup
-
-# Update dependencies
-./gradlew useLatestVersions --update-dependency-locks
-
-# Verify build
-./gradlew clean build -x test
-if [ $? -eq 0 ]; then
-    echo "✅ Build successful"
-    
-    # Generate reports
-    ./gradlew dependencyUpdates
-    ./gradlew dependencyCheckAnalyze
-    
-    # Commit changes
-    git add build.gradle gradle/
-    git commit -m "chore(deps): Security fixes and dependency updates"
-else
-    echo "❌ Build failed, reverting..."
-    mv build.gradle.backup.* build.gradle
-    [ -f gradle/libs.versions.toml.backup ] && mv gradle/libs.versions.toml.backup gradle/libs.versions.toml
-fi
-```
-
 **Pull Request Template**
 
 ```markdown
@@ -614,8 +513,6 @@ on:
   push:
     paths:
       - 'pom.xml'
-      - 'build.gradle'
-      - 'gradle/libs.versions.toml'
   pull_request:
   workflow_dispatch:
 
@@ -636,13 +533,9 @@ jobs:
     
     - name: OWASP Dependency Check
       run: |
-        if [ -f pom.xml ]; then
-          mvn org.owasp:dependency-check-maven:check \
-            -Dformat=HTML,JSON \
-            -DfailBuildOnCVSS=7
-        elif [ -f build.gradle ]; then
-          ./gradlew dependencyCheckAnalyze
-        fi
+        mvn org.owasp:dependency-check-maven:check \
+          -Dformat=HTML,JSON \
+          -DfailBuildOnCVSS=7
     
     - name: Snyk Security Scan
       uses: snyk/actions/maven@master
@@ -652,10 +545,7 @@ jobs:
         args: --severity-threshold=high
     
     - name: License Compliance Check
-      run: |
-        if [ -f pom.xml ]; then
-          mvn license:aggregate-third-party-report
-        fi
+      run: mvn license:aggregate-third-party-report
     
     - name: Upload Reports
       if: always()
@@ -752,7 +642,7 @@ Based on the specified scope and focus, provide:
     - Red flag identification
 
 6. **Automated Remediation Plan**
-    - Fix scripts for Maven/Gradle
+    - Fix scripts for Maven
     - Pull request generation
     - Rollback procedures
     - Testing strategy

@@ -46,27 +46,6 @@
 </dependencies>
 ```
 
-## Gradle Dependencies
-
-```gradle
-dependencies {
-    // Spring Boot Web
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-
-    // Spring Data JPA
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-
-    // Kafka
-    implementation 'org.springframework.kafka:spring-kafka'
-
-    // Spring Cloud Stream
-    implementation 'org.springframework.cloud:spring-cloud-stream:4.0.4'
-
-    // Testing
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.testcontainers:testcontainers:1.19.0'
-}
-```
 
 ## Version Selection
 

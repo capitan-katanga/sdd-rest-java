@@ -88,36 +88,6 @@
 </plugin>
 ```
 
-## Gradle Plugin
-
-### Basic Gradle Configuration
-
-```gradle
-plugins {
-    id 'org.springdoc.openapi-gradle-plugin' version '1.9.0'
-}
-
-openApi {
-    apiDocsUrl = "http://localhost:8080/v3/api-docs"
-    outputDir = file("$buildDir/docs")
-    outputFileName = "openapi.json"
-}
-```
-
-### Custom Gradle Configuration
-
-```gradle
-openapi {
-    apiDocsUrl.set("http://localhost:8080/v3/api-docs")
-    outputDir.set(file("$buildDir/docs"))
-    outputFileName.set("openapi.yaml")
-    groupedApiMappings.set([
-        "public": "http://localhost:8080/v3/api-docs/public",
-        "admin": "http://localhost:8080/v3/api-docs/admin"
-    ])
-}
-```
-
 ## CI/CD Integration
 
 ### GitHub Actions Workflow
@@ -247,15 +217,9 @@ void validateBookSchema() {
 ### Generate Swagger UI Static Files
 
 ```bash
-# Using Maven
 mvn verify
 
-# Using Gradle
-gradle openApi
-
-# The generated files will be in:
-# - target/openapi.json (Maven)
-# - buildDir/docs/openapi.json (Gradle)
+# The generated files will be in target/openapi.json
 ```
 
 ### Custom Output Directory

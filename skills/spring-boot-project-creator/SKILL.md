@@ -44,7 +44,7 @@ Ask the user for the following project parameters using **AskUserQuestion**. Pro
 | **Java Version** | `21` | `17`, `21` |
 | **Architecture** | User choice | `DDD` or `Layered` |
 | **Docker Services** | User choice | PostgreSQL, Redis, MongoDB (multi-select) |
-| **Build Tool** | `maven` | `maven`, `gradle` |
+| **Build Tool** | `maven` | `maven` |
 
 ### 2. Generate Project with Spring Initializr
 

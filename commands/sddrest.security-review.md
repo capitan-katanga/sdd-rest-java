@@ -110,7 +110,7 @@ Analyze the following vulnerability categories in Java context:
 
 #### A06: Vulnerable and Outdated Components
 
-- Maven/Gradle dependency scanning (OWASP Dependency-Check)
+- Maven dependency scanning (OWASP Dependency-Check)
 - Libraries with known CVEs
 - Outdated Spring/Jakarta EE versions
 - Vulnerable transitive dependencies
@@ -168,7 +168,7 @@ Analyze the following vulnerability categories in Java context:
 
 ### 3. Dependencies and Libraries Analysis
 
-#### Maven/Gradle Dependency Analysis
+#### Maven Dependency Analysis
 
 ```bash
 # Run vulnerability scan
@@ -225,13 +225,6 @@ mvn org.owasp:dependency-check-maven:check
 - Secrets management (K8s secrets)
 - Network policies
 - Pod security policies
-
-#### Cloud Platform Security
-
-- AWS/Azure/GCP security configurations
-- IAM roles and policies
-- VPC/network security
-- Cloud security groups
 
 ### 7. Security Testing
 

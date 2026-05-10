@@ -35,7 +35,7 @@ Run test → If fails: add .andDo(print()) → Check actual vs expected → Fix 
 
 ## Examples
 
-### Maven / Gradle Dependencies
+### Maven Dependencies
 
 ```xml
 <dependency>

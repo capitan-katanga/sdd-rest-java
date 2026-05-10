@@ -18,13 +18,6 @@
 </plugin>
 ```
 
-**Gradle equivalent**:
-```gradle
-tasks.withType(JavaCompile).configureEach {
-    options.compilerArgs += ["-parameters"]
-}
-```
-
 ### Swagger UI Shows "Unable to render definition"
 
 **Problem**: Swagger UI displays error "Unable to render definition".
@@ -90,7 +83,7 @@ public class SecurityConfig {
 }
 ```
 
-### Maven/Gradle Build Issues
+### Maven Build Issues
 
 **Problem**: Build fails due to conflicting SpringDoc dependencies.
 

@@ -24,11 +24,6 @@ SpringDoc OpenAPI is a Java library that automates API documentation generation 
 </dependency>
 ```
 
-### Gradle (Spring Boot 3.x)
-```gradle
-implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.13'
-```
-
 ### WebFlux Support
 ```xml
 <dependency>
@@ -522,7 +517,7 @@ class BookController(private val repository: BookRepository) {
 }
 ```
 
-## Maven and Gradle Plugins
+## Maven Plugins
 
 ### Maven Plugin for Generating OpenAPI
 ```xml
@@ -544,19 +539,6 @@ class BookController(private val repository: BookRepository) {
         <outputDir>${project.build.directory}</outputDir>
     </configuration>
 </plugin>
-```
-
-### Gradle Plugin
-```gradle
-plugins {
-    id 'org.springdoc.openapi-gradle-plugin' version '1.9.0'
-}
-
-openApi {
-    apiDocsUrl = "http://localhost:8080/v3/api-docs"
-    outputDir = file("$buildDir/docs")
-    outputFileName = "openapi.json"
-}
 ```
 
 ## Migration from SpringFox

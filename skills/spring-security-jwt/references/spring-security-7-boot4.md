@@ -605,7 +605,7 @@ spring.web.cors.max-age=3600
 
 ### OAuth2 Resource Server
 
-For validating JWT tokens from OAuth2 providers (e.g., Azure AD, Okta):
+For validating JWT tokens from OAuth2 providers (e.g., Keycloak, Okta, Auth0):
 
 ```java
 @Configuration

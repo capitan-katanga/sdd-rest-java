@@ -19,7 +19,7 @@ Patterns for testing external REST API integrations with WireMock: stubbing resp
 
 ## Instructions
 
-1. **Add dependency**: WireMock in test scope (Maven/Gradle)
+1. **Add dependency**: WireMock in test scope (Maven)
 2. **Register extension**: `@RegisterExtension WireMockExtension` with `dynamicPort()`
 3. **Configure client**: Use `wireMock.getRuntimeInfo().getHttpBaseUrl()` as base URL
 4. **Stub responses**: `stubFor()` with request matching (URL, headers, body)

@@ -36,7 +36,7 @@ Domain-Driven Design patterns, and Spring Boot best practices.
 ## Context
 
 - Project structure: !`find . -name "*.java" -type f | head -20`
-- Build system: !`ls -la | grep -E "(pom\.xml|build\.gradle|build\.gradle\.kts)"`
+- Build system: !`ls -la | grep -E "pom\.xml"`
 - Package structure: !`find . -name "*.java" -type f | grep -E "src/main/java" | head -10`
 - Spring Boot configuration: !`find . -name "application*.yml" -o -name "application*.properties"`
 
@@ -48,7 +48,7 @@ $1 specifies the package path to review (optional - defaults to entire codebase)
 
 $2 specifies the focus area (optional):
 
-- `clean-architecture` - Clean Architecture layer separation
+- `layered` - Controller → service → repository layer separation, SOLID principles
 - `ddd` - Domain-Driven Design patterns
 - `spring-boot` - Spring Boot specific patterns
 - `security` - Security architecture

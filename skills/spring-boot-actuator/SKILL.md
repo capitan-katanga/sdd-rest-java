@@ -26,12 +26,7 @@ allowed-tools: Read, Write, Bash
     <artifactId>spring-boot-starter-actuator</artifactId>
 </dependency>
 ```
-```gradle
-// Gradle
-dependencies {
-    implementation "org.springframework.boot:spring-boot-starter-actuator"
-}
-```
+
 After adding the dependency, verify endpoints respond:
 ```bash
 curl http://localhost:8080/actuator/health
@@ -193,7 +188,7 @@ More end-to-end samples are available in `references/examples.md`.
 - Scripts directory (`scripts/`) reserved for future automation; no runtime dependencies today.
 
 ## Validation Checklist
-- Confirm `mvn spring-boot:run` or `./gradlew bootRun` exposes expected endpoints under `/actuator` (or custom base path).
+- Confirm `mvn spring-boot:run` exposes expected endpoints under `/actuator` (or custom base path).
 - Verify `/actuator/health/readiness` returns `UP` with all mandatory components before promoting to production.
 - Scrape `/actuator/metrics` or `/actuator/prometheus` to ensure required meters (`http.server.requests`, `jvm.memory.used`) are present.
 - Run security scans to validate only intended ports and endpoints are reachable from outside the trusted network.

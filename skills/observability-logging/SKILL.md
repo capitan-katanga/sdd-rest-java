@@ -1,7 +1,7 @@
 ---
 name: observability-logging
-description: "Production logging for Spring Boot 4: Logback config, structured JSON logs, MDC for correlation IDs, async appenders, log levels per profile. Read before designing log output, adding correlation context, or wiring logs to OpenTelemetry/CloudWatch/Application Insights. Triggers: Logback, logback-spring.xml, SLF4J, MDC, MDC.put, correlation ID, traceId, spanId, async appender, AsyncAppender, JsonLayout, LogstashEncoder, logging.pattern, logging.structured.format, OpenTelemetry logs."
-version: 0.1.0
+description: "Production logging for Spring Boot 4: Logback config, structured JSON logs, MDC for correlation IDs, async appenders, log levels per profile. Read before designing log output, adding correlation context, or wiring logs to OpenTelemetry. Triggers: Logback, logback-spring.xml, SLF4J, MDC, MDC.put, correlation ID, traceId, spanId, async appender, AsyncAppender, JsonLayout, LogstashEncoder, logging.pattern, logging.structured.format, OpenTelemetry logs."
+version: 0.2.0
 license: Apache-2.0
 ---
 
@@ -21,7 +21,7 @@ license: Apache-2.0
 - Adding metrics or distributed tracing — covered by `spring-boot-actuator` (Micrometer, observation API)
 - Configuring Spring profiles or properties in general → use `core-setup`
 - Deploying a logging sidecar in containers → use `containerization-docker`
-- Routing logs to a cloud platform (CloudWatch / Application Insights) — that's infra, not the JVM-side concern this skill covers (cloud-side wiring lives in `azure-container-apps-deployment` or AWS skills)
+- Configuring distributed tracing spans / OTLP exporters → use `spring-opentelemetry-tracing`
 
 ## When to Read References
 

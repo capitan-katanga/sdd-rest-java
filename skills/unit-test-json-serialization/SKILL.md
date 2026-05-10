@@ -44,14 +44,6 @@ Provides patterns for unit testing JSON serialization and deserialization using 
 </dependency>
 ```
 
-### Gradle Setup
-```kotlin
-dependencies {
-  implementation("org.springframework.boot:spring-boot-starter-json")
-  testImplementation("org.springframework.boot:spring-boot-starter-test")
-}
-```
-
 ### Basic Serialization and Deserialization
 
 ```java

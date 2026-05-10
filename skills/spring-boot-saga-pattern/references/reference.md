@@ -182,13 +182,6 @@ spring:
 </dependency>
 ```
 
-### Gradle Dependencies
-
-```groovy
-implementation 'org.springframework.cloud:spring-cloud-stream'
-implementation 'org.springframework.cloud:spring-cloud-stream-binder-kafka'
-```
-
 ---
 
 ## Orchestration-Based Saga

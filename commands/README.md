@@ -10,7 +10,7 @@ Current roster (11):
 |---|---|
 | `sddrest.architect-review` | High-level architecture review of the current branch |
 | `sddrest.code-review` | PR-style code review |
-| `sddrest.dependency-audit` | Audit Maven/Gradle deps for CVEs and outdated versions |
+| `sddrest.dependency-audit` | Audit Maven deps for CVEs and outdated versions |
 | `sddrest.generate-crud` | Scaffold full CRUD (entity, repo, service, controller, tests) for a domain class |
 | `sddrest.generate-docs` | Generate Javadoc / OpenAPI / README updates |
 | `sddrest.generate-refactoring-tasks` | Produce a refactoring task list for a target class or package |

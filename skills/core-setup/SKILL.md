@@ -1,22 +1,21 @@
 ---
 name: core-setup
-description: "Spring Boot 4.x foundation: project init, application.yml profiles, @ConfigurationProperties, dotfiles. Read before scaffolding a new Boot 4 service or migrating from Boot 3.x. Triggers: Spring Boot 4, spring-boot-starter-parent 4, Java 25, Jakarta EE 11, Spring Framework 7, Hibernate 7.1, application.yml, application-{profile}.yml, @ConfigurationProperties, @ConfigurationPropertiesScan, spring.profiles.active, .editorconfig, .gitignore Java, start.spring.io, spring init."
-version: 0.1.0
+description: "Spring Boot 4.x project configuration best practices: pom.xml structure, profile-aware application.yml, type-safe @ConfigurationProperties records, externalized config via env vars and Spring Cloud Config. Read before scaffolding a new Boot 4 service or adding configuration. Triggers: Spring Boot 4, spring-boot-starter-parent 4, Java 25, Jakarta EE 11, Spring Framework 7, application.yml, application-{profile}.yml, @ConfigurationProperties, @ConfigurationPropertiesScan, spring.profiles.active, spring.config.activate.on-profile."
+version: 0.2.0
 license: Apache-2.0
 ---
 
 # Core Setup — Spring Boot 4.x
 
-**Signals**: `pom.xml` / `build.gradle.kts` referencing `spring-boot-starter-parent` 4.x, missing `application.yml`, no `@ConfigurationProperties`, scaffolding from scratch, migrating Boot 3 → Boot 4.
+**Signals**: `pom.xml` referencing `spring-boot-starter-parent` 4.x, missing `application.yml`, no `@ConfigurationProperties`, scaffolding from scratch.
 
 ## Tested With
 
-- Spring Boot 4.0.x (GA Nov 2025)
+- Spring Boot 4.0.x
 - Java 25 (LTS)
 - Jakarta EE 11
 - Spring Framework 7.x
-- Hibernate ORM 7.1.x
-- Maven 3.9+ / Gradle 8.10+
+- Maven 3.9+
 
 ## Do NOT Use This Skill When
 
@@ -24,18 +23,8 @@ license: Apache-2.0
 - Building Docker images → use `containerization-docker`
 - Configuring logging → use `observability-logging`
 - Configuring security → use `spring-security-jwt`
+- Setting up Spring Cloud Config Server → use `spring-cloud-discovery-config`
 - Writing tests → use `spring-testing-fundamentals` and friends
-
-## When to Read References
-
-| Situation | Read |
-|-----------|------|
-| Migrating from Boot 3.x to Boot 4.x: deprecated APIs, config keys, dependencies | `references/spring-boot-4-migration.md` |
-| New project scaffold, `start.spring.io` parameters, recommended starters | `references/spring-boot-4-migration.md` |
-| `application.yml` structure, profiles, externalized config, `@ConfigurationProperties` records | `references/configuration-best-practices.md` |
-| Property precedence, secrets handling, env-var binding, Spring Cloud Config | `references/configuration-best-practices.md` |
-| Repo dotfiles (`.editorconfig`, `.gitignore`, `.gitattributes`), formatting (Spotless), pre-commit hooks | `references/dotfiles-and-project-init.md` |
-| GitHub Actions CI baseline for a Java service | `references/dotfiles-and-project-init.md` |
 
 ## Quick Reference
 
@@ -68,7 +57,7 @@ spring.config.activate.on-profile: prod
 server.port: 80
 ```
 
-**Type-safe configuration with records (Boot 3+, idiomatic in Boot 4):**
+**Type-safe configuration with records:**
 ```java
 @ConfigurationProperties("app.payments")
 public record PaymentsProperties(
@@ -86,5 +75,9 @@ public class Application { /* ... */ }
 
 - Don't carry over `javax.*` imports — Boot 3+ requires `jakarta.*`.
 - Don't rely on `@Value` for groups of related properties — use `@ConfigurationProperties` records.
-- Don't put secrets in `application.yml` — use Spring Cloud Config, AWS Secrets Manager, or env vars.
+- Don't put secrets in `application.yml` — use environment variables or Spring Cloud Config with an encrypted backend.
 - Don't pin to Java 17 / 21 for greenfield Boot 4 projects — Java 25 is the LTS aligned with Boot 4.
+
+## References
+
+- `references/configuration-best-practices.md` — full configuration cookbook: profile structure, externalized config hierarchy, `@ConfigurationProperties` validation, secrets handling for local + production, HikariCP / Jackson / CORS / Actuator presets, configuration metadata processor.

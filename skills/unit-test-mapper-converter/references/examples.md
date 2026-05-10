@@ -21,15 +21,6 @@
 </dependency>
 ```
 
-### Gradle
-```kotlin
-dependencies {
-  implementation("org.mapstruct:mapstruct:1.5.5.Final")
-  testImplementation("org.junit.jupiter:junit-jupiter")
-  testImplementation("org.assertj:assertj-core")
-}
-```
-
 ## Basic Pattern: MapStruct Mapper
 
 ```java

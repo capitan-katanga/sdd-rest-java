@@ -118,7 +118,7 @@ echo -e "${YELLOW}⚠️  IMPORTANT SECURITY NOTES:${NC}"
 echo "1. Change the default passwords before production use"
 echo "2. Store the keystore file securely (don't commit to version control)"
 echo "3. Use environment variables or secret management in production"
-echo "4. Consider using a cloud KMS (AWS KMS, Azure Key Vault, etc.)"
+echo "4. Consider using a dedicated secrets backend (HashiCorp Vault, etc.)"
 echo "5. Implement key rotation strategy"
 
 # Instructions for usage

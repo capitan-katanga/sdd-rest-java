@@ -49,18 +49,6 @@
 </dependencies>
 ```
 
-### Gradle Dependencies
-```gradle
-dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
-    implementation 'org.springframework.security:spring-security-oauth2-jose'
-    implementation 'com.nimbusds:nimbus-jose-jwt:9.37.3'
-    implementation 'org.springframework.security:spring-security-crypto'
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
-}
-```
-
 ## JWT Encoder Configuration
 
 ### Asymmetric Key Configuration (RSA)

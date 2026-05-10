@@ -163,25 +163,6 @@ For `@`CacheEvict only. If true, entire cache is cleared instead of single entry
 </dependency>
 ```
 
-### Gradle Dependencies
-
-```gradle
-dependencies {
-    // Spring Cache Starter
-    implementation 'org.springframework.boot:spring-boot-starter-cache:3.5.6'
-
-    // Caffeine
-    implementation 'com.github.ben-manes.caffeine:caffeine:3.1.6'
-
-    // EhCache
-    implementation 'javax.cache:cache-api:1.1.1'
-    implementation 'org.ehcache:ehcache:3.10.8'
-
-    // Redis
-    implementation 'org.springframework.boot:spring-boot-starter-data-redis:3.5.6'
-}
-```
-
 ### Application Properties (application.properties)
 
 ```properties

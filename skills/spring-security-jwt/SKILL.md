@@ -47,7 +47,7 @@ Activate when user requests involve:
 | `io.jsonwebtoken:jjwt-jackson:0.12.6` | runtime |
 | `spring-security-test` | test |
 
-See [references/jwt-quick-reference.md](references/jwt-quick-reference.md) for Maven and Gradle snippets.
+See [references/jwt-quick-reference.md](references/jwt-quick-reference.md) for Maven snippets.
 
 ### Key Configuration Properties
 
@@ -74,7 +74,7 @@ See [references/jwt-quick-reference.md](references/jwt-quick-reference.md) for M
 
 ### Step 1 — Add Dependencies
 
-Include `spring-boot-starter-security`, `spring-boot-starter-oauth2-resource-server`, and the three JJWT artifacts in your build file. See [references/jwt-quick-reference.md](references/jwt-quick-reference.md) for exact Maven/Gradle snippets.
+Include `spring-boot-starter-security`, `spring-boot-starter-oauth2-resource-server`, and the three JJWT artifacts in your build file. See [references/jwt-quick-reference.md](references/jwt-quick-reference.md) for exact Maven snippets.
 
 ### Step 2 — Configure application.yml
 

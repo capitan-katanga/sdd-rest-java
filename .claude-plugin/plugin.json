@@ -1,7 +1,7 @@
 {
   "name": "sdd-rest-java",
-  "version": "0.1.0",
-  "description": "Spec-Driven Development plugin for modern Java REST services on Spring Boot 4.x — REST patterns, persistence, security, AWS/Azure cloud, containerization, observability, and a sharp testing pyramid. Flow-agnostic: integrates with Spec Kit, Kiro, or Claude Code natively.",
+  "version": "0.2.0",
+  "description": "Spec-Driven Development plugin for modern Java microservices on Spring Boot 4.x — REST patterns, persistence, security, Spring Cloud, Kafka, async/concurrency, OpenTelemetry, Docker, and a sharp testing pyramid. Maven-only. Flow-agnostic: integrates with Spec Kit, Kiro, or Claude Code natively.",
   "author": {
     "name": "Ignacio Encizo",
     "email": "ignacioencizo@gmail.com"
@@ -10,13 +10,14 @@
   "keywords": [
     "java",
     "spring-boot-4",
+    "spring-cloud",
+    "microservices",
     "rest",
+    "kafka",
+    "opentelemetry",
     "sdd",
-    "aws-sdk",
-    "azure",
     "testing",
-    "junit",
-    "graalvm"
+    "junit"
   ],
   "agents": [
     "./agents/spring-boot-backend-development-expert.md",
@@ -42,7 +43,6 @@
   ],
   "skills": [
     "./skills/core-setup",
-    "./skills/clean-architecture",
     "./skills/spring-boot-project-creator",
     "./skills/spring-boot-dependency-injection",
     "./skills/spring-boot-rest-api-standards",
@@ -55,20 +55,8 @@
     "./skills/spring-boot-saga-pattern",
     "./skills/spring-data-jpa",
     "./skills/spring-data-neo4j",
-    "./skills/aws-rds-spring-boot-integration",
     "./skills/spring-security-jwt",
-    "./skills/aws-sdk-java-v2-core",
-    "./skills/aws-sdk-java-v2-s3",
-    "./skills/aws-sdk-java-v2-dynamodb",
-    "./skills/aws-sdk-java-v2-rds",
-    "./skills/aws-sdk-java-v2-messaging",
-    "./skills/aws-sdk-java-v2-kms",
-    "./skills/aws-sdk-java-v2-secrets-manager",
-    "./skills/aws-sdk-java-v2-lambda",
-    "./skills/aws-lambda-java-integration",
-    "./skills/azure-container-apps-deployment",
     "./skills/containerization-docker",
-    "./skills/graalvm-native-image",
     "./skills/observability-logging",
     "./skills/spring-testing-fundamentals",
     "./skills/spring-jpa-testing",

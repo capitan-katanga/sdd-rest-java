@@ -120,13 +120,6 @@ spring:
 </dependency>
 ```
 
-## Gradle Dependencies
-
-```groovy
-implementation 'org.springframework.cloud:spring-cloud-stream'
-implementation 'org.springframework.cloud:spring-cloud-stream-binder-kafka'
-```
-
 ## Advantages and Disadvantages
 
 ### Advantages

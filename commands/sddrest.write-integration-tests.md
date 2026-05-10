@@ -140,14 +140,6 @@ Verify and add required dependencies:
 </dependency>
 ```
 
-**Gradle:**
-
-```kotlin
-testImplementation("org.springframework.boot:spring-boot-starter-test")
-testImplementation("org.testcontainers:junit-jupiter:1.19.0")
-testImplementation("org.testcontainers:postgresql:1.19.0")
-```
-
 ### 5. Test Coverage
 
 Generate tests covering:

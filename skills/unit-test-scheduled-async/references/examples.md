@@ -24,17 +24,6 @@
 </dependency>
 ```
 
-## Gradle Dependencies
-
-```kotlin
-dependencies {
-  implementation("org.springframework.boot:spring-boot-starter")
-  testImplementation("org.junit.jupiter:junit-jupiter")
-  testImplementation("org.awaitility:awaitility")
-  testImplementation("org.assertj:assertj-core")
-}
-```
-
 ## Basic Async Testing with CompletableFuture
 
 ```java

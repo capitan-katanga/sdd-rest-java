@@ -253,8 +253,6 @@ API_KEY=your-api-key
 API_SECRET=your-api-secret
 ```
 
-> See also **[Project Setup & Dotfiles](./PROJECT-SETUP.md)** for `.env.sample` patterns, `.gitignore` rules, and `.dockerignore` recommendations.
-
 ## Configuration Properties Classes
 
 ### Type-Safe Configuration
@@ -438,9 +436,7 @@ kubectl create secret generic app-secrets \
   --from-literal=database-password=prod-password \
   --from-literal=api-key=prod-api-key
 
-# Azure Container Apps secrets
-# AWS Secrets Manager
-# Google Cloud Secret Manager
+# Or use Spring Cloud Config Server with an encrypted backend (Vault, JCE)
 ```
 
 ## Common Configuration Patterns

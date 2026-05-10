@@ -23,26 +23,20 @@ Provides patterns for parameterized unit tests in Java using JUnit 5. Covers `@V
 2. **Choose source**: `@ValueSource` for simple values, `@CsvSource` for tabular data, `@MethodSource` for complex objects
 3. **Match parameters**: Test method parameters must match data source types
 4. **Set display names**: Use `name = "{0}..."` for readable output
-5. **Validate**: Run `./gradlew test --info` or `mvn test` and verify all parameter combinations execute
+5. **Validate**: Run `mvn test` and verify all parameter combinations execute
 
 ## Examples
 
-### Maven / Gradle Dependency
+### Maven Dependency
 
 JUnit 5 parameterized tests require `junit-jupiter` (includes params). Add `assertj-core` for assertions:
 
 ```xml
-<!-- Maven -->
 <dependency>
   <groupId>org.junit.jupiter</groupId>
   <artifactId>junit-jupiter</artifactId>
   <scope>test</scope>
 </dependency>
-```
-
-```kotlin
-// Gradle
-testImplementation("org.junit.jupiter:junit-jupiter")
 ```
 
 ### `@ValueSource` — Simple Values

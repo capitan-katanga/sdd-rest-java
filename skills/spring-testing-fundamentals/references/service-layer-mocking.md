@@ -51,7 +51,7 @@ Configure mocks to throw exceptions with `when().thenThrow()`.
 
 ### 5. Verify Complete Coverage
 
-- Run full test suite: `mvn test` or `gradle test`
+- Run full test suite: `mvn test`
 - Check coverage report: `mvn test jacoco:report`
 - **Validation checkpoint**: Confirm all service methods have corresponding tests
 
@@ -171,16 +171,6 @@ Complete code examples for unit testing `@Service` classes with Mockito.
   <artifactId>assertj-core</artifactId>
   <scope>test</scope>
 </dependency>
-```
-
-### Gradle
-```kotlin
-dependencies {
-  testImplementation("org.junit.jupiter:junit-jupiter")
-  testImplementation("org.mockito:mockito-core")
-  testImplementation("org.mockito:mockito-junit-jupiter")
-  testImplementation("org.assertj:assertj-core")
-}
 ```
 
 ## Basic Pattern: Service with Mocked Dependencies

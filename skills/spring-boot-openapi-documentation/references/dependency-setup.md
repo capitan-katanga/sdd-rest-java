@@ -26,19 +26,6 @@
 </dependency>
 ```
 
-## Gradle Dependencies
-
-```gradle
-// Standard WebMVC support
-implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.13'
-
-// Optional: therapi-runtime-javadoc for JavaDoc support
-implementation 'com.github.therapi:therapi-runtime-javadoc:0.15.0'
-
-// WebFlux support
-implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.8.13'
-```
-
 ## Version Selection
 
 - **Spring Boot 3.x**: Use SpringDoc 2.x (e.g., 2.8.13)

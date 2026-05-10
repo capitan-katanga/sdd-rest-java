@@ -19,10 +19,3 @@ To add the actuator to a Maven-based project, add the following starter dependen
 </dependencies>
 ```
 
-For Gradle, use the following declaration:
-
-```gradle
-dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-}
-```

@@ -176,7 +176,7 @@ See [references/basic-testing.md](references/basic-testing.md) for more basic pa
 ## References
 
 ### Setup and Configuration
-- **[references/setup.md](references/setup.md)** - Maven/Gradle dependencies and security configuration
+- **[references/setup.md](references/setup.md)** - Maven dependencies and security configuration
 
 ### Testing Patterns
 - **[references/basic-testing.md](references/basic-testing.md)** - Basic patterns for `@PreAuthorize`, `@Secured`, MockMvc testing, and parameterized tests
@@ -1163,23 +1163,6 @@ Add the following dependencies to your `pom.xml`:
     <scope>test</scope>
   </dependency>
 </dependencies>
-```
-
-## Gradle Configuration
-
-Add the following dependencies to your `build.gradle.kts`:
-
-```kotlin
-dependencies {
-  // Spring Security
-  implementation("org.springframework.boot:spring-boot-starter-security")
-
-  // Spring Boot Test (includes JUnit 5)
-  testImplementation("org.springframework.boot:spring-boot-starter-test")
-
-  // Spring Security Test
-  testImplementation("org.springframework.security:spring-security-test")
-}
 ```
 
 ## Enable Method Security

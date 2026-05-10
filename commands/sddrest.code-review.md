@@ -66,7 +66,7 @@ ENDIF
 - **Detected Technology**: Spring Boot (Boot 3.5.x preferred)
 - **Java Version**: Verify Java 16+ for records, Java 21+ LTS
 - **Spring Framework**: Spring Boot, Spring Security, Spring Data JPA, etc.
-- **Build System**: Maven or Gradle
+- **Build System**: Maven
 - **Database**: PostgreSQL, MySQL, H2 for testing
 
 ## Phase 2: Architecture and Design Patterns Review

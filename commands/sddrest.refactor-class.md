@@ -140,7 +140,7 @@ feature/
 
 ```bash
 # Run existing tests
-./gradlew test || mvn test
+mvn test
 
 # Create backup branch if not dry-run
 if [ "$3" != "dry-run" ]; then
@@ -161,13 +161,13 @@ For each refactoring step:
 
 ```bash
 # Full test suite
-./gradlew test || mvn test
+mvn test
 
 # Static analysis
-./gradlew spotbugsMain || ./gradlew checkstyleMain
+mvn spotbugs:check || mvn checkstyle:check
 
 # Performance validation
-./gradlew bench || echo "No performance tests configured"
+mvn verify -Pbench || echo "No performance tests configured"
 ```
 
 ## Common Refactoring Patterns

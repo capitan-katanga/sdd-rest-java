@@ -21,15 +21,11 @@ Provides patterns for unit testing MapStruct mappers and custom converter classe
 ### 1. Validate Generated Mapper Classes
 Before testing, verify generated mapper classes exist:
 ```bash
-# Maven
 ls target/generated-sources/
-
-# Gradle
-ls build/generated/sources/
 ```
 
 **If generated classes are missing:**
-1. Run `mvn compile` (Maven) or `./gradlew compileJava` (Gradle)
+1. Run `mvn compile`
 2. Check that the MapStruct annotation processor is configured
 3. Verify `@Mapper` interfaces are in a compiled source set
 

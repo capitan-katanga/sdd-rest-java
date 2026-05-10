@@ -19,13 +19,6 @@ Quick reference for common JWT patterns in Spring Boot 3.5.x applications.
 </dependency>
 ```
 
-```kotlin
-// Gradle
-implementation("io.jsonwebtoken:jjwt-api:0.12.6")
-implementation("io.jsonwebtoken:jjwt-impl:0.12.6")
-implementation("io.jsonwebtoken:jjwt-jackson:0.12.6")
-```
-
 ## Basic JWT Service
 
 ```java

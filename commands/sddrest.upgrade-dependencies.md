@@ -1,7 +1,7 @@
 ---
 allowed-tools: Read, Bash, Edit, Write, Grep, Glob
 argument-hint: "[scope] [strategy] [version]"
-description: Manages safe and incremental dependency upgrades for Java/Maven/Gradle projects with breaking change detection and migration guides. Use when upgrading project dependencies or migrating to new library versions.
+description: Manages safe and incremental dependency upgrades for Java/Maven projects with breaking change detection and migration guides. Use when upgrading project dependencies or migrating to new library versions.
 ---
 
 # Java Dependency Upgrade Strategy
@@ -11,7 +11,7 @@ description: Manages safe and incremental dependency upgrades for Java/Maven/Gra
 Plan and execute safe, incremental upgrades of Java project dependencies with minimal risk, proper testing, and clear
 migration paths for breaking changes.
 
-Manages safe and incremental dependency upgrades for Java/Maven/Gradle projects with breaking change detection and
+Manages safe and incremental dependency upgrades for Java/Maven projects with breaking change detection and
 migration guides. Use when upgrading project dependencies or migrating to new library versions.
 
 ## Usage
@@ -56,11 +56,11 @@ $3 specifies target version for specific dependency upgrades (optional):
 
 ## Context
 
-- Build system: !`ls -la | grep -E "(pom\.xml|build\.gradle|build\.gradle\.kts)"`
+- Build system: !`ls -la | grep -E "pom\.xml"`
 - Current dependencies: !
-  `if [ -f pom.xml ]; then mvn dependency:tree | head -30; elif [ -f build.gradle ]; then ./gradlew dependencies --configuration compileClasspath | head -30; fi`
+  `mvn dependency:tree | head -30`
 - Outdated dependencies: !
-  `if [ -f pom.xml ]; then mvn versions:display-dependency-updates 2>/dev/null | grep -E "\\->" | head -20; elif [ -f build.gradle ]; then ./gradlew dependencyUpdates 2>/dev/null | grep -E "\\->" | head -20; fi`
+  `mvn versions:display-dependency-updates 2>/dev/null | grep -E "\\->" | head -20`
 
 ## Upgrade Analysis Process
 
@@ -141,11 +141,8 @@ Check peer dependencies:
 ### Strategy 1: Patch Updates (Safe)
 
 ```bash
-# Maven: Update all patch versions
+# Update all patch versions
 mvn versions:use-latest-releases -DallowMajorUpdates=false -DallowMinorUpdates=false
-
-# Gradle: Update patch versions
-./gradlew useLatestVersions --update-dependency-locks
 ```
 
 **Testing**: Smoke tests + unit tests
@@ -155,11 +152,8 @@ mvn versions:use-latest-releases -DallowMajorUpdates=false -DallowMinorUpdates=f
 ### Strategy 2: Minor Updates (Careful)
 
 ```bash
-# Maven: Update minor versions
+# Update minor versions
 mvn versions:use-latest-releases -DallowMajorUpdates=false
-
-# Gradle with version catalog
-./gradlew versionCatalogUpdate --no-major
 ```
 
 **Testing**: Full regression suite
@@ -227,34 +221,6 @@ mvn versions:update-parent
 
 # Revert changes if needed
 mvn versions:revert
-```
-
-## Gradle Commands
-
-### Analysis
-
-```bash
-# Check for updates (with plugin)
-./gradlew dependencyUpdates
-
-# Show dependency tree
-./gradlew dependencies --configuration compileClasspath
-
-# Security scan
-./gradlew dependencyCheckAnalyze
-```
-
-### Execution
-
-```bash
-# Update version catalog
-./gradlew versionCatalogUpdate
-
-# Refresh dependencies
-./gradlew build --refresh-dependencies
-
-# Clean and rebuild
-./gradlew clean build
 ```
 
 ## Migration Guide Template
@@ -331,19 +297,15 @@ mvn clean install
 ```bash
 # Compile
 mvn clean compile
-./gradlew compileJava
 
 # Run tests
 mvn test
-./gradlew test
 
 # Integration tests
 mvn verify
-./gradlew integrationTest
 
 # Code quality
 mvn checkstyle:check spotbugs:check
-./gradlew check
 
 # Generate dependency report
 mvn project-info-reports:dependencies
@@ -365,24 +327,21 @@ mvn project-info-reports:dependencies
 # Git tag before upgrade
 git tag -a "pre-upgrade-$(date +%Y%m%d)" -m "Pre-upgrade snapshot"
 
-# Backup POM/Gradle files
+# Backup POM
 cp pom.xml pom.xml.backup
-cp build.gradle build.gradle.backup
-cp gradle/libs.versions.toml gradle/libs.versions.toml.backup
 ```
 
 ### Execute Rollback
 
 ```bash
 # Restore from backup
-git checkout pom.xml build.gradle gradle/libs.versions.toml
+git checkout pom.xml
 
 # Or revert to tag
 git reset --hard pre-upgrade-YYYYMMDD
 
 # Clean rebuild
 mvn clean install
-./gradlew clean build
 ```
 
 ## Common Java Dependency Upgrades
@@ -442,7 +401,7 @@ Based on the specified scope and strategy, provide:
     - Testing strategy
 
 4. **Execution Commands**
-    - Maven/Gradle commands to execute
+    - Maven commands to execute
     - Testing commands
     - Rollback procedures
 

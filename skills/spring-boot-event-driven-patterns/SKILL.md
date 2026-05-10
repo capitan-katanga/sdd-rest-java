@@ -203,7 +203,7 @@ Enable Spring Cloud Sleuth for distributed tracing, monitor metrics.
 
 ## References
 
-- **[dependency-setup.md](references/dependency-setup.md)** — Maven/Gradle dependencies
+- **[dependency-setup.md](references/dependency-setup.md)** — Maven dependencies
 - **[configuration.md](references/configuration.md)** — Kafka and Spring Cloud Stream configuration
 - **[domain-events-design.md](references/domain-events-design.md)** — Domain event design patterns
 - **[aggregate-root-patterns.md](references/aggregate-root-patterns.md)** — Aggregate root with event publishing
@@ -228,5 +228,3 @@ Enable Spring Cloud Sleuth for distributed tracing, monitor metrics.
 
 - `spring-security-jwt` — JWT authentication for secure event publishing
 - `spring-testing-fundamentals` — Testing event-driven applications
-- `aws-sdk-java-v2-lambda` — Event-driven processing with AWS Lambda
-- `aws-sdk-java-v2-messaging` — SQS/SNS-backed event delivery

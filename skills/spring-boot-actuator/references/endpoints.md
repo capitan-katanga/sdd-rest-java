@@ -233,13 +233,6 @@ To expose git information in the `info` endpoint, add the following to your buil
 </plugin>
 ```
 
-**Gradle:**
-```groovy
-plugins {
-    id "com.gorylenko.gradle-git-properties" version "2.4.1"
-}
-```
-
 ### Build Information
 
 Build information can be added to the `info` endpoint by configuring the build plugins:
@@ -257,13 +250,6 @@ Build information can be added to the `info` endpoint by configuring the build p
         </execution>
     </executions>
 </plugin>
-```
-
-**Gradle:**
-```groovy
-springBoot {
-    buildInfo()
-}
 ```
 
 ## Metrics Endpoint

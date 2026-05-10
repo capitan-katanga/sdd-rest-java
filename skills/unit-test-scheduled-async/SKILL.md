@@ -89,7 +89,7 @@ void shouldHandleAsyncExceptionGracefully() {
 }
 ```
 
-Full Maven/Gradle dependencies, additional test classes, and execution count patterns: see `references/examples.md`.
+Full Maven dependencies, additional test classes, and execution count patterns: see `references/examples.md`.
 
 ## Best Practices
 

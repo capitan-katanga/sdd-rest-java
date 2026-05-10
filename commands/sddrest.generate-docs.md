@@ -37,7 +37,7 @@ Boot projects. Generate professional documentation following Java and Spring eco
 ## Current Project Context
 
 - **Project Root**: !`pwd`
-- **Build System**: Detected from `pom.xml` (Maven) or `build.gradle*` (Gradle)
+- **Build System**: Detected from `pom.xml` (Maven)
 - **Git Branch**: !`git branch --show-current`
 - **Java Version**: Extracted from build configuration
 - **Spring Boot Version**: Extracted from dependencies
@@ -74,10 +74,6 @@ if [ -f "pom.xml" ]; then
     echo "Maven project detected"
     MVN_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout 2>/dev/null)
     JAVA_VERSION=$(mvn help:evaluate -Dexpression=maven.compiler.source -q -DforceStdout 2>/dev/null)
-elif [ -f "build.gradle" ] || [ -f "build.gradle.kts" ]; then
-    echo "Gradle project detected"
-    ./gradlew properties --quiet | grep "version:"
-    ./gradlew properties --quiet | grep "sourceCompatibility"
 fi
 ```
 
@@ -91,7 +87,7 @@ Search for key dependencies and annotations:
 - **Security**: Spring Security configuration, JWT
 - **Testing**: JUnit 5, Mockito, Testcontainers
 - **Documentation**: Swagger/OpenAPI annotations
-- **Build Tools**: Maven plugins, Gradle plugins
+- **Build Tools**: Maven plugins
 
 ### 1.3 Package Structure Analysis
 
@@ -587,7 +583,7 @@ public class UserService {
 ## 📋 Prerequisites
 
 - **Java 17+** (OpenJDK or Oracle JDK)
-- **Maven 3.8+** or **Gradle 8.0+**
+- **Maven 3.9+**
 - **PostgreSQL 14+** (for production)
 - **Redis 6+** (for caching, optional)
 

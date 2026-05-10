@@ -556,7 +556,7 @@ public class SecureKeyStore {
     }
 
     private void storeKeySecurely(String keyId, KeyPair keyPair) {
-        // Implement secure storage (e.g., AWS KMS, HashiCorp Vault)
+        // Implement secure storage (e.g., HashiCorp Vault)
         // Never store private keys in application properties or files
     }
 

@@ -24,17 +24,11 @@ Use this skill when working with:
 
 **Add the dependency:**
 
-Maven:
 ```xml
 <dependency>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-data-neo4j</artifactId>
 </dependency>
-```
-
-Gradle:
-```groovy
-implementation 'org.springframework.boot:spring-boot-starter-data-neo4j'
 ```
 
 **Configure connection in application.properties:**

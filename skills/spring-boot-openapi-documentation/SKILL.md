@@ -41,7 +41,7 @@ SpringDoc OpenAPI automates generation of OpenAPI 3.0 documentation for Spring B
 
 ### 1. Add Dependencies
 
-Add SpringDoc starter for your application type (WebMvc or WebFlux). See [dependency-setup.md](references/dependency-setup.md) for Maven/Gradle configuration.
+Add SpringDoc starter for your application type (WebMvc or WebFlux). See [dependency-setup.md](references/dependency-setup.md) for Maven configuration.
 
 ### 2. Configure SpringDoc
 
@@ -149,7 +149,7 @@ Configure API grouping, versioning, and build plugins. See [advanced-configurati
 
 ## References
 
-- **[dependency-setup.md](references/dependency-setup.md)** — Maven/Gradle dependencies and version selection
+- **[dependency-setup.md](references/dependency-setup.md)** — Maven dependencies and version selection
 - **[configuration.md](references/configuration.md)** — Basic and advanced configuration options
 - **[controller-documentation.md](references/controller-documentation.md)** — Controller and endpoint documentation patterns
 - **[model-documentation.md](references/model-documentation.md)** — Entity, DTO, and validation documentation
@@ -157,7 +157,7 @@ Configure API grouping, versioning, and build plugins. See [advanced-configurati
 - **[pagination-support.md](references/pagination-support.md)** — Pageable, Slice, and custom pagination patterns
 - **[advanced-configuration.md](references/advanced-configuration.md)** — API groups, customizers, OpenAPI bean configuration
 - **[exception-handling.md](references/exception-handling.md)** — Exception documentation and error response schemas
-- **[build-integration.md](references/build-integration.md)** — Maven/Gradle plugins and CI/CD integration
+- **[build-integration.md](references/build-integration.md)** — Maven plugins and CI/CD integration
 - **[complete-examples.md](references/complete-examples.md)** — Full controller, entity, and configuration examples
 - **[annotations-reference.md](references/annotations-reference.md)** — Complete annotation reference with attributes
 - **[springdoc-official.md](references/springdoc-official.md)** — Official SpringDoc documentation

@@ -6,7 +6,6 @@
 - [Development with Automatic Docker Compose Support](#development-with-automatic-docker-compose-support)
 - [Available Docker Files](#available-docker-files)
 - [Application Configuration](#application-configuration)
-- [GraalVM Native Configuration](#graalvm-native-configuration)
 - [Best Practices](#best-practices)
 - [Development vs Production](#development-vs-production)
 - [Troubleshooting](#troubleshooting)
@@ -15,26 +14,23 @@
 - [Resources](#resources)
 
 ## Overview
-This guide covers Docker deployment for Spring Boot 4 applications, including both traditional JVM-based deployments and GraalVM native images.
+This guide covers Docker deployment for Spring Boot 4 applications using JVM-based images.
 
 **Spring Boot 4 Requirements:**
 
-1. Java 17+ (Java 25 recommended - used in our Dockerfiles)
-2. GraalVM 25+ for native images
-3. Jakarta EE 11 / Servlet 6.1 baseline
-4. PostgreSQL (we use `postgres:18-alpine` for optimal size and performance)
+1. Java 25 (LTS) — used in our Dockerfiles
+2. Jakarta EE 11 / Servlet 6.1 baseline
+3. PostgreSQL (we use `postgres:18-alpine` for optimal size and performance)
 
 **Key Improvements in These Docker Files:**
 
 1. Eclipse Temurin 25 official images (Alpine-based for smaller footprint)
-2. GraalVM 25 for native images (required for Spring Boot 4)
-3. PostgreSQL 18 Alpine (smaller, more secure)
-4. Optimized JVM flags for container environments
-5. curl installed for healthchecks
-6. Non-root user security
-7. Multi-stage builds for smaller images
-8. ❌ **No Buildpacks/Jib** — stick to the provided Dockerfiles/Compose
-
+2. PostgreSQL 18 Alpine (smaller, more secure)
+3. Optimized JVM flags for container environments
+4. curl installed for healthchecks
+5. Non-root user security
+6. Multi-stage builds for smaller images
+7. ❌ **No Buildpacks/Jib** — stick to the provided Dockerfiles/Compose
 
 ## Prerequisites
 
@@ -56,7 +52,7 @@ When you run `./mvnw spring-boot:run`, Spring Boot will:
 
 ### Setup
 
-Create a `compose.yaml` file in your project root (or copy from `assets/compose.yaml`):
+Create a `compose.yaml` file in your project root:
 
 ```yaml
 services:
@@ -84,7 +80,6 @@ volumes:
   postgres_data:
 ```
 > Compose spec v2+: omit the `version:` key. Spring Boot's `spring-boot-docker-compose` works with this layout.
-
 
 ### Usage
 
@@ -127,7 +122,7 @@ spring.docker.compose.file=docker/compose-dev.yaml
 2. Automatic datasource configuration
 3. Containers start only when needed
 4. Automatic cleanup on application stop (configurable)
-5. Works with PostgreSQL, MySQL, MongoDB, Redis, and more
+5. Works with PostgreSQL, MySQL, MongoDB, Redis, Kafka, and more
 
 **Note:** This is for development only. For production deployment, see the sections below.
 
@@ -157,30 +152,7 @@ docker build -t my-spring-app .
 docker run -p 8080:8080 my-spring-app
 ```
 
-### 2. Dockerfile-native (GraalVM Native Image)
-Native compilation using GraalVM 25 for faster startup and lower memory footprint.
-
-**Location**: Copy to your project root
-
-**Features**:
-
-1. GraalVM 25 native image compilation (required for Spring Boot 4)
-2. Ultra-fast startup time (<100ms)
-3. Lower memory consumption
-4. Smaller runtime image (Debian 12 slim base)\n5. Health check with curl included\n6. Ideal for serverless and microservices
-
-**Build and Run**:
-```bash
-# Build the native image
-docker build -f Dockerfile-native -t my-spring-app-native .
-
-# Run the native container
-docker run -p 8080:8080 my-spring-app-native
-```
-
-**Note**: Native compilation takes longer but results in a much faster runtime application.
-
-### 3. docker-compose.yml (JVM with Database)
+### 2. docker-compose.yml (JVM with Database)
 Complete stack with PostgreSQL 18 database and Spring Boot application.
 
 **Location**: Copy to your project root
@@ -214,30 +186,6 @@ docker compose down -v
 - Application: http://localhost:8080
 - Database: localhost:5432
 
-### 4. docker-compose-native.yml (Native with Database)
-Complete stack using GraalVM 25 native image with PostgreSQL 18.
-
-**Location**: Copy to your project root
-
-**Features**:
-- All benefits of docker-compose.yml
-- Uses GraalVM 25 native Spring Boot image
-- PostgreSQL 18 Alpine for smaller footprint
-- Faster startup times (<100ms vs several seconds)
-- Lower resource usage (50-75% less memory)
-
-**Usage**:
-```bash
-# Start all services with native image
-docker compose -f docker-compose-native.yml up -d
-
-# View logs
-docker compose -f docker-compose-native.yml logs -f
-
-# Stop all services
-docker compose -f docker-compose-native.yml down
-```
-
 ## Application Configuration
 
 ### Environment Variables
@@ -269,61 +217,17 @@ services:
 
 **Note**: Modern Docker Compose doesn't require a version field.
 
-## GraalVM Native Configuration
-
-### POM.xml Configuration
-To enable GraalVM native compilation, add to your `pom.xml`:
-
-```xml
-<profiles>
-    <profile>
-        <id>native</id>
-        <build>
-            <plugins>
-                <plugin>
-                    <groupId>org.graalvm.buildtools</groupId>
-                    <artifactId>native-maven-plugin</artifactId>
-                    <executions>
-                        <execution>
-                            <id>build-native</id>
-                            <goals>
-                                <goal>compile-no-fork</goal>
-                            </goals>
-                            <phase>package</phase>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-maven-plugin</artifactId>
-                    <configuration>
-                        <classifier>exec</classifier>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </build>
-    </profile>
-</profiles>
-```
-
-### Native Build Requirements
-- **GraalVM 25+** required for Spring Boot 4
-- Ensure all reflection, resources, and JNI access are declared
-- Spring Boot 4.x has excellent native support out of the box
-- Most Spring libraries are pre-configured for native compilation
-- TestContainers 2.0+ supports native testing
-
 ## Best Practices
 
 ### 1. Image Optimization
-- Use multi-stage builds to minimize final image size (both Dockerfiles use this)
+- Use multi-stage builds to minimize final image size
 - Use Alpine or slim variants: `postgres:18-alpine`, `eclipse-temurin:25-jre-alpine`
 - Clean up package manager cache after installations
 - Copy only necessary files
 - Use `.dockerignore` to exclude unnecessary files
 
 ### 2. Security
-- Run as non-root user (both Dockerfiles implement this)
+- Run as non-root user
 - **Pin specific versions** in production (postgres:18-alpine, not latest)
 - Use official images: Eclipse Temurin for Java, postgres:alpine for database
 - Scan images for vulnerabilities: `docker scout cves my-app`
@@ -351,8 +255,6 @@ The Dockerfile includes optimized JVM flags:
 - `-XX:+UseContainerSupport`: Enables container-aware memory management
 - `-XX:MaxRAMPercentage=75.0`: Uses 75% of container memory limit
 - These flags ensure the JVM respects Docker memory limits
-
-**For native images:** No JVM tuning needed - GraalVM native apps are already optimized.
 
 ### 5. Data Persistence
 - Use named volumes for database data
@@ -451,7 +353,6 @@ docker system prune -a
 - [ ] Configure environment variables for production
 - [ ] **Pin versions**: Use specific tags (postgres:18-alpine, not latest)
 - [ ] **Java version**: Verify Java 25+ for Spring Boot 4
-- [ ] **GraalVM version**: Use GraalVM 25+ for native images
 - [ ] Set up health checks (already configured in provided files)
 - [ ] Configure resource limits (memory, CPU)
 - [ ] Set up logging and log aggregation
@@ -467,5 +368,3 @@ docker system prune -a
 - [Docker Documentation](https://docs.docker.com/)
 - [Docker Compose Documentation](https://docs.docker.com/compose/)
 - [Spring Boot Docker Guide](https://spring.io/guides/gs/spring-boot-docker/)
-- [GraalVM Native Image](https://www.graalvm.org/latest/reference-manual/native-image/)
-- [Spring Native Documentation](https://docs.spring.io/spring-boot/docs/current/reference/html/native-image.html)

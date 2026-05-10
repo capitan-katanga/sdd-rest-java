@@ -2,16 +2,15 @@
 
 ## What lives here
 
-47 task-scoped knowledge packs, each in its own subdirectory. A skill bundles concrete instructions, code templates, and references for one well-defined task — *write a Spring MVC slice test*, *integrate AWS SQS via SDK v2*, *containerize with a multi-stage Dockerfile*. This is where the bulk of the plugin's domain knowledge lives.
+Task-scoped knowledge packs, each in its own subdirectory. A skill bundles concrete instructions, code templates, and references for one well-defined task — *write a Spring MVC slice test*, *configure a Spring Cloud Config Server*, *containerize with a multi-stage Dockerfile*. This is where the bulk of the plugin's domain knowledge lives.
 
 Categories:
-- **Foundations** — `core-setup`, `clean-architecture`, `spring-boot-project-creator`, `spring-boot-dependency-injection`
+- **Foundations** — `core-setup`, `spring-boot-project-creator`, `spring-boot-dependency-injection`
 - **REST & web** — `spring-boot-rest-api-standards`, `spring-boot-crud-patterns`, `spring-boot-openapi-documentation`, `spring-boot-actuator`
 - **Reliability** — `spring-boot-cache`, `spring-boot-resilience4j`, `spring-boot-event-driven-patterns`, `spring-boot-saga-pattern`
-- **Persistence** — `spring-data-jpa`, `spring-data-neo4j`, `aws-rds-spring-boot-integration`
+- **Persistence** — `spring-data-jpa`, `spring-data-neo4j`
 - **Security** — `spring-security-jwt`
-- **AWS SDK v2** — `core`, `s3`, `dynamodb`, `rds`, `messaging`, `kms`, `secrets-manager`, `lambda`
-- **Cloud / runtime** — `aws-lambda-java-integration`, `azure-container-apps-deployment`, `containerization-docker`, `graalvm-native-image`
+- **Container / runtime** — `containerization-docker`
 - **Observability** — `observability-logging`
 - **Testing slices** — `spring-testing-fundamentals`, `spring-jpa-testing`, `spring-mvc-testing`, `spring-security-testing`, `spring-webflux-testing`, `spring-websocket-testing`
 - **Unit-test recipes** — `unit-test-application-events`, `bean-validation`, `boundary-conditions`, `caching`, `config-properties`, `json-serialization`, `mapper-converter`, `parameterized`, `scheduled-async`, `utility-methods`, `wiremock-rest-api`, `wiremock-standalone-docker`
@@ -158,7 +157,7 @@ m = json.load(open('$PLUGIN/.claude-plugin/plugin.json'))
 known = {os.path.basename(p) for p in m['skills']}
 for s in known:
     body = open(f'$PLUGIN/skills/{s}/SKILL.md').read()
-    for ref in re.findall(r'\b(unit-test-[a-z-]+|spring-[a-z-]+|aws-[a-z-]+)\b', body):
+    for ref in re.findall(r'\b(unit-test-[a-z-]+|spring-[a-z-]+)\b', body):
         if ref not in known and ref not in {'spring-boot','spring-cloud','spring-framework','spring-data'}:
             pass  # noise — tighten this regex if you need a strict check
 print('done')

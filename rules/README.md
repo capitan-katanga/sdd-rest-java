@@ -11,7 +11,7 @@ Current rules (4):
 | `error-handling.md` | Exception hierarchy, RFC 7807 Problem Details, recovery patterns |
 | `language-best-practices.md` | Modern Java idioms (records, sealed types, pattern matching) |
 | `naming-conventions.md` | Package, class, method, and field naming standards |
-| `project-structure.md` | Maven/Gradle layout, package-by-feature vs by-layer, module boundaries |
+| `project-structure.md` | Maven layout, package-by-feature vs by-layer, module boundaries |
 
 ## Loading model
 

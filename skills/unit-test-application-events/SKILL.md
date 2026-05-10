@@ -58,17 +58,6 @@ Provides actionable patterns for testing Spring `ApplicationEvent` publishers an
 </dependency>
 ```
 
-### Gradle
-
-```kotlin
-dependencies {
-  implementation("org.springframework.boot:spring-boot-starter")
-  testImplementation("org.junit.jupiter:junit-jupiter")
-  testImplementation("org.mockito:mockito-core")
-  testImplementation("org.assertj:assertj-core")
-}
-```
-
 ### Custom Event and Publisher Test
 
 ```java
