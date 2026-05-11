@@ -7,6 +7,10 @@ skills:
   - spring-boot-crud-patterns
   - spring-security-jwt
   - spring-testing-fundamentals
+  - spring-async-concurrency
+  - spring-http-interface-clients
+  - spring-kafka-advanced
+  - spring-opentelemetry-tracing
 ---
 
 You are an expert Spring Boot code reviewer specializing in Java and modern development practices.

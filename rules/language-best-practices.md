@@ -45,6 +45,15 @@ Enforce modern Java (17+) and Spring Boot best practices to produce clean, maint
 - Use `Objects.requireNonNull()` for defensive null checks in constructors
 - Write `toString()`, `equals()`, and `hashCode()` only when semantically needed (Records handle this automatically)
 
+### SOLID Principles
+Apply pragmatically; the goal is testable, change-tolerant code, not academic purity.
+
+- **S — Single Responsibility**: One class, one reason to change. A `Service` that talks to JPA, calls an external API, and formats emails is doing three jobs — split it.
+- **O — Open/Closed**: Extend via composition (new strategy beans, new `@Component` implementations of an interface), not by modifying existing code. Use polymorphism and Spring's bean wiring instead of `switch` on a type discriminator.
+- **L — Liskov Substitution**: Subtypes must honor the supertype's contract. Prefer sealed hierarchies (`sealed interface`) when the set of subtypes is fixed — the compiler enforces totality on `switch`.
+- **I — Interface Segregation**: Many small focused interfaces over one fat interface. A `PriceQuoteClient` with one method beats a `BackendClient` with 30. Especially relevant for `@HttpExchange` interfaces — see `spring-http-interface-clients`.
+- **D — Dependency Inversion**: Depend on abstractions injected via constructor, not on concrete classes instantiated with `new`. This is what constructor injection (above) buys you — combined with the dependency-direction rule in `project-structure.md`.
+
 ## Examples
 
 ### ✅ Good

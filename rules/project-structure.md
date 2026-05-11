@@ -44,13 +44,23 @@ com.company.project/
     └── domain/
 ```
 
-### Layer Responsibilities
-- **web/**: REST controllers, request/response DTOs, input validation
-- **service/**: Business logic, transaction management, orchestration
-- **repository/**: Data access interfaces (Spring Data JPA repositories)
-- **domain/**: JPA entities, value objects, enums
-- **config/**: Spring `@Configuration` classes
-- **exception/**: Custom exceptions and global exception handlers
+### Layer Responsibilities (MVC + Service + Repository)
+This layout is a **layered MVC** structure: `web/` is the **C**ontroller layer, `domain/` carries the **M**odel (DTOs are the response representation), and the **V**iew is JSON (no server-side rendering). `service/` is the business-logic layer between web and persistence; `repository/` is the data-access boundary.
+
+- **web/**: REST controllers (`@RestController`, `@RequestMapping`), request/response DTOs, input validation. **Thin** — no business logic.
+- **service/**: Business logic, transaction management, orchestration. Speaks to repositories and other services; never speaks back to controllers.
+- **repository/**: Data access interfaces (Spring Data JPA repositories). Returns entities; never returns DTOs.
+- **domain/**: JPA entities, value objects, enums. No Spring dependencies.
+- **config/**: Spring `@Configuration` classes.
+- **exception/**: Custom exceptions and global `@RestControllerAdvice` handlers.
+
+### Dependency direction
+Dependencies flow one way: **web → service → repository → domain**. Never the reverse.
+- A repository must not import a controller or a DTO.
+- A service must not import a controller (use `web/dto/` records as data, not as a coupling channel).
+- The `domain/` package depends on nothing inside the module.
+
+Violations of this direction are the most common architectural smell in Spring Boot codebases — they make tests harder, transactions leakier, and refactors riskier.
 
 ### File Organization Rules
 - One public class per file
