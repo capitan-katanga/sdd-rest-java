@@ -6,7 +6,7 @@ SpringDoc OpenAPI is a Java library that automates API documentation generation 
 
 ## Key Features
 
-- **OpenAPI 3 support** with Spring Boot v3 (Java 17 & Jakarta EE 9)
+- **OpenAPI 3 support** with Spring Boot 4 (Java 25 & Jakarta EE 11)
 - **Swagger UI integration** for interactive API documentation
 - **Scalar support** as an alternative UI
 - **Multiple endpoint support** with grouping capabilities
@@ -15,12 +15,12 @@ SpringDoc OpenAPI is a Java library that automates API documentation generation 
 
 ## Dependencies
 
-### Maven (Spring Boot 3.x)
+### Maven (Spring Boot 4.x)
 ```xml
 <dependency>
     <groupId>org.springdoc</groupId>
     <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-    <version>2.8.13</version>
+    <version>3.0.2</version>
 </dependency>
 ```
 
@@ -29,7 +29,7 @@ SpringDoc OpenAPI is a Java library that automates API documentation generation 
 <dependency>
     <groupId>org.springdoc</groupId>
     <artifactId>springdoc-openapi-starter-webflux-ui</artifactId>
-    <version>2.8.13</version>
+    <version>3.0.2</version>
 </dependency>
 ```
 
@@ -44,11 +44,9 @@ After adding the dependency:
 
 | Spring Boot Version | SpringDoc OpenAPI Version |
 |---------------------|---------------------------|
-| 3.4.x               | 2.7.x - 2.8.x            |
-| 3.3.x               | 2.6.x                    |
-| 3.2.x               | 2.3.x - 2.5.x            |
-| 3.1.x               | 2.2.x                    |
-| 3.0.x               | 2.0.x - 2.1.x            |
+| 4.x (Java 25, Jakarta EE 11) | `3.0.2` |
+
+Spring Boot 3.x / 2.x are out of scope for this plugin.
 
 ## Basic Configuration
 
@@ -468,52 +466,6 @@ public GroupedOpenApi apiGroup() {
         .pathsToMatch("/api/**")
         .pathsToExclude("/api/internal/**")
         .build();
-}
-```
-
-## Kotlin Support
-
-### Kotlin Data Class Documentation
-```kotlin
-import io.swagger.v3.oas.annotations.media.Schema
-import jakarta.validation.constraints.NotBlank
-import jakarta.validation.constraints.Size
-
-@Entity
-data class Book(
-    @field:Schema(description = "Unique identifier", accessMode = Schema.AccessMode.READ_ONLY)
-    @Id
-    val id: Long = 0,
-
-    @field:NotBlank
-    @field:Size(min = 1, max = 200)
-    @field:Schema(description = "Book title", example = "Clean Code", required = true)
-    val title: String = "",
-
-    @field:NotBlank
-    @field:Schema(description = "Author name", example = "Robert Martin")
-    val author: String = ""
-)
-
-@RestController
-@RequestMapping("/api/books")
-@Tag(name = "Book", description = "Book management APIs")
-class BookController(private val repository: BookRepository) {
-
-    @Operation(summary = "Get all books")
-    @ApiResponses(value = [
-        ApiResponse(
-            responseCode = "200",
-            description = "Found books",
-            content = [Content(
-                mediaType = "application/json",
-                array = ArraySchema(schema = Schema(implementation = Book::class))
-            )]
-        ),
-        ApiResponse(responseCode = "404", description = "No books found", content = [Content()])
-    ])
-    @GetMapping
-    fun getAllBooks(): List<Book> = repository.findAll()
 }
 ```
 

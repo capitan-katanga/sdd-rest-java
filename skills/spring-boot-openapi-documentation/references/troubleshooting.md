@@ -93,7 +93,7 @@ public class SecurityConfig {
 <dependency>
     <groupId>org.springdoc</groupId>
     <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-    <version>2.8.13</version>
+    <version>3.0.2</version>
 </dependency>
 ```
 
@@ -102,35 +102,8 @@ For WebFlux applications:
 <dependency>
     <groupId>org.springdoc</groupId>
     <artifactId>springdoc-openapi-starter-webflux-ui</artifactId>
-    <version>2.8.13</version>
+    <version>3.0.2</version>
 </dependency>
-```
-
-### JavaDoc Integration Issues
-
-**Problem**: JavaDoc comments are not appearing in the API documentation.
-
-**Solution**: Add the therapi-runtime-javadoc dependency:
-
-```xml
-<dependency>
-    <groupId>com.github.therapi</groupId>
-    <artifactId>therapi-runtime-javadoc</artifactId>
-    <version>0.15.0</version>
-    <scope>provided</scope>
-</dependency>
-```
-
-### Kotlin Integration Issues
-
-**Problem**: Kotlin classes or functions are not properly documented.
-
-**Solution**: Use `@field:` annotation prefix for Kotlin properties:
-
-```kotlin
-@field:Schema(description = "Book title", example = "Clean Code")
-@field:NotBlank
-val title: String = ""
 ```
 
 ### Custom Serialization Issues

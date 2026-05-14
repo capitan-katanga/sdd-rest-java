@@ -345,18 +345,3 @@ public RouterFunction<ServerResponse> bookRouter(BookHandler handler) {
 }
 ```
 
-## Kotlin Support
-
-### Kotlin DSL Configuration
-
-```kotlin
-@Bean
-fun customOpenAPI(): OpenAPI {
-    return OpenAPI()
-        .info(Info()
-            .title("Kotlin API")
-            .version("1.0.0")
-            .description("API built with Kotlin and Spring Boot")
-        )
-}
-```

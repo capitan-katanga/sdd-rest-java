@@ -3,31 +3,25 @@
 ## Maven Dependencies
 
 ```xml
-<!-- Standard WebMVC support -->
+<!-- SWAGGER -->
 <dependency>
     <groupId>org.springdoc</groupId>
     <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-    <version>2.8.13</version>
+    <version>3.0.2</version>
 </dependency>
 
-<!-- Optional: therapi-runtime-javadoc for JavaDoc support -->
-<dependency>
-    <groupId>com.github.therapi</groupId>
-    <artifactId>therapi-runtime-javadoc</artifactId>
-    <version>0.15.0</version>
-    <scope>provided</scope>
-</dependency>
-
-<!-- WebFlux support -->
+<!-- WebFlux alternative -->
 <dependency>
     <groupId>org.springdoc</groupId>
     <artifactId>springdoc-openapi-starter-webflux-ui</artifactId>
-    <version>2.8.13</version>
+    <version>3.0.2</version>
 </dependency>
 ```
 
 ## Version Selection
 
-- **Spring Boot 3.x**: Use SpringDoc 2.x (e.g., 2.8.13)
-- **Spring Boot 2.x**: Use SpringDoc 1.x
-- Always check for the latest stable version at [Maven Central](https://mvnrepository.com/artifact/org.springdoc)
+| Spring Boot | SpringDoc OpenAPI |
+|---|---|
+| 4.x (Java 25, Jakarta EE 11) | `3.0.2` |
+
+Spring Boot 3.x / 2.x are out of scope for this plugin. Always check [Maven Central](https://mvnrepository.com/artifact/org.springdoc) for newer 3.x releases when upgrading.

@@ -306,12 +306,12 @@ public class SecurityConfig {
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.0</version>
+        <version>4.0.6</version>
     </parent>
 
     <properties>
-        <java.version>17</java.version>
-        <springdoc.version>2.8.13</springdoc.version>
+        <java.version>25</java.version>
+        <springdoc.version>3.0.2</springdoc.version>
     </properties>
 
     <dependencies>

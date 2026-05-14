@@ -159,59 +159,6 @@ generate-docs:
     - main
 ```
 
-## Automated Testing
-
-### OpenAPI Specification Validation
-
-```java
-import org.springdoc.core.utils.SpringDocUtils;
-import static org.junit.jupiter.api.Assertions.*;
-
-@SpringBootTest
-class OpenApiDocumentationTest {
-
-    @Autowired
-    private OpenApiContract openApiContract;
-
-    @Test
-    void validateOpenApiSpec() {
-        OpenAPI openAPI = openApiContract.getOpenApi();
-
-        assertNotNull(openAPI);
-        assertNotNull(openAPI.getInfo());
-        assertEquals("1.0.0", openAPI.getInfo().getVersion());
-        assertFalse(openAPI.getPaths().isEmpty());
-    }
-
-    @Test
-    void allPathsHaveDocumentation() {
-        OpenAPI openAPI = openApiContract.getOpenApi();
-
-        openAPI.getPaths().forEach((path, pathItem) -> {
-            pathItem.readOperationsMap().forEach((method, operation) -> {
-                assertNotNull(operation.getSummary(), "Missing summary for " + method + " " + path);
-                assertFalse(operation.getResponses().isEmpty(), "No responses for " + method + " " + path);
-            });
-        });
-    }
-}
-```
-
-### Schema Validation Tests
-
-```java
-@Test
-void validateBookSchema() {
-    OpenAPI openAPI = openApiContract.getOpenApi();
-    Schema bookSchema = openAPI.getComponents().getSchemas().get("Book");
-
-    assertNotNull(bookSchema);
-    assertTrue(bookSchema.getProperties().containsKey("id"));
-    assertTrue(bookSchema.getProperties().containsKey("title"));
-    assertTrue(bookSchema.getProperties().containsKey("author"));
-}
-```
-
 ## Static Documentation Generation
 
 ### Generate Swagger UI Static Files
