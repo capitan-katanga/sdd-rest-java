@@ -1,6 +1,6 @@
 {
   "name": "sdd-rest-java",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Spec-Driven Development plugin for modern Java microservices on Spring Boot 4.x — REST patterns, persistence, security, Spring Cloud, Kafka, async/concurrency, OpenTelemetry, Docker, and a sharp testing pyramid. Maven-only. Flow-agnostic: integrates with Spec Kit, Kiro, or Claude Code natively.",
   "author": {
     "name": "Ignacio Encizo",
@@ -48,6 +48,7 @@
     "./skills/spring-boot-rest-api-standards",
     "./skills/spring-boot-crud-patterns",
     "./skills/spring-boot-openapi-documentation",
+    "./skills/java-code-documentation-conventions",
     "./skills/spring-boot-actuator",
     "./skills/spring-boot-cache",
     "./skills/spring-boot-resilience4j",

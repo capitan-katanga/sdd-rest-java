@@ -1,4 +1,6 @@
-# SpringDoc OpenAPI Annotations Reference
+# OpenAPI Annotation Reference
+
+Attribute-by-attribute reference for the SpringDoc / Swagger annotations used when authoring `@RestController` and DTO classes. For pattern examples in context, see [openapi-authoring-patterns.md](openapi-authoring-patterns.md). For the layer-split rule and `@Service` Javadoc tag reference, see [javadoc-tag-reference.md](javadoc-tag-reference.md).
 
 ## Core Annotations
 
@@ -49,7 +51,7 @@ Describes a single API operation.
 
 **Attributes:**
 - `summary`: Short summary (< 120 chars)
-- `description`: Detailed description
+- `description`: Detailed description (Markdown / CommonMark — the place for intent: preconditions, idempotency, side effects, transaction notes)
 - `operationId`: Unique operation ID
 - `deprecated`: Mark as deprecated
 - `hidden`: Hide from documentation
@@ -271,6 +273,8 @@ public Page<Book> getPaginated(
 
 ### Standard Bean Validation
 
+SpringDoc reads JSR-303 / Jakarta Bean Validation annotations and folds them into the generated schema constraints. No extra `@Schema` work required for these.
+
 ```java
 @NotNull           // Required field
 @NotBlank          // Required, non-empty string
@@ -385,15 +389,14 @@ For polymorphic types.
 public abstract class Publication { }
 ```
 
-## Annotation Best Practices
+## Annotation authoring reminders
 
-1. **Use descriptive summaries**: Keep under 120 characters
-2. **Provide detailed descriptions**: Explain behavior and use cases
-3. **Document all response codes**: Include 2xx, 4xx, 5xx
-4. **Add examples**: Provide realistic request/response examples
-5. **Leverage validation**: Let Bean Validation annotations auto-document constraints
-6. **Group logically**: Use `@Tag` to organize related endpoints
-7. **Be consistent**: Use similar annotation patterns across controllers
-8. **Hide internal endpoints**: Use `@Hidden` or separate API groups
-9. **Document security**: Apply `@SecurityRequirement` appropriately
-10. **Document complex types**: Use `@Schema` for nested objects and generics
+1. Keep `@Operation(summary)` under 120 characters.
+2. Use `@Operation(description)` to carry **intent** (preconditions, idempotency, side effects, transaction boundary) as Markdown — that is the controller's substitute for Javadoc under the layer-split rule.
+3. Document every response code the global exception handler can produce in `@ApiResponse`.
+4. Provide realistic examples via `@ExampleObject` on request and response bodies.
+5. Let JSR-303 validation annotations carry length/range/format constraints — do not duplicate them in `@Schema`.
+6. Use `@Tag` at the class level to organize endpoints by domain.
+7. Hide internal endpoints via `@Operation(hidden = true)` or separate API groups; do not rely on absence of annotations.
+8. Apply `@SecurityRequirement` at the class level when the whole controller is protected; override per method when the protection differs.
+9. Use `@Schema(implementation = ...)` for generics and other types SpringDoc cannot infer.

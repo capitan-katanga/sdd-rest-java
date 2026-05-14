@@ -12,6 +12,7 @@ skills:
   - spring-security-jwt
   - spring-boot-actuator
   - spring-boot-openapi-documentation
+  - java-code-documentation-conventions
   - spring-boot-resilience4j
   - spring-cloud-discovery-config
   - spring-cloud-gateway

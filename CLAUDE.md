@@ -14,7 +14,7 @@ These differ in *when* they enter Claude's context. Confusing the loading model 
 
 | Type | Lives in | Listed in `plugin.json`? | Loads when |
 |---|---|---|---|
-| **Skills** (47) | `skills/<name>/SKILL.md` | yes | Frontmatter `description` matches the conversation. Body loads only on match. `references/*.md` load only if SKILL.md cites them by path. |
+| **Skills** (41) | `skills/<name>/SKILL.md` | yes | Frontmatter `description` matches the conversation. Body loads only on match. `references/*.md` load only if SKILL.md cites them by path. |
 | **Agents** (7) | `agents/<name>.md` | yes | Invoked by name (user request, slash command, or another agent). Runs in a fresh subagent context. |
 | **Commands** (11) | `commands/sddrest.<verb>.md` | yes | User types `/sdd-rest-java:sddrest.<verb>`. The `.md` body becomes the prompt. |
 | **Rules** (4) | `rules/<topic>.md` | **no** — directory convention | Always-on in every conversation. `paths:` glob narrows where the rule applies, but the rule is always in context. |
@@ -82,7 +82,7 @@ for s in $PLUGIN/skills/*/; do
 done
 ```
 
-Expected baseline counts: **47 skills, 7 agents, 11 commands, 4 rules**. Mismatches mean the manifest and disk are out of sync.
+Expected baseline counts: **41 skills, 7 agents, 11 commands, 4 rules**. Mismatches mean the manifest and disk are out of sync.
 
 ## Versioning
 
