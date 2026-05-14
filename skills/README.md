@@ -4,16 +4,20 @@
 
 Task-scoped knowledge packs, each in its own subdirectory. A skill bundles concrete instructions, code templates, and references for one well-defined task — *write a Spring MVC slice test*, *configure a Spring Cloud Config Server*, *containerize with a multi-stage Dockerfile*. This is where the bulk of the plugin's domain knowledge lives.
 
-Categories:
+Categories (41 skills total):
 - **Foundations** — `core-setup`, `spring-boot-project-creator`, `spring-boot-dependency-injection`
-- **REST & web** — `spring-boot-rest-api-standards`, `spring-boot-crud-patterns`, `spring-boot-openapi-documentation`, `spring-boot-actuator`
+- **REST & web** — `spring-boot-rest-api-standards`, `spring-boot-crud-patterns`, `spring-boot-actuator`
+- **API documentation** — `spring-boot-openapi-documentation` (SpringDoc wiring), `java-code-documentation-conventions` (authoring patterns, Javadoc/OpenAPI layer split)
 - **Reliability** — `spring-boot-cache`, `spring-boot-resilience4j`, `spring-boot-event-driven-patterns`, `spring-boot-saga-pattern`
 - **Persistence** — `spring-data-jpa`, `spring-data-neo4j`
 - **Security** — `spring-security-jwt`
+- **Spring Cloud microservices** — `spring-cloud-discovery-config`, `spring-cloud-gateway`, `spring-http-interface-clients`
+- **Messaging** — `spring-kafka-advanced`
+- **Concurrency** — `spring-async-concurrency`
 - **Container / runtime** — `containerization-docker`
-- **Observability** — `observability-logging`
+- **Observability** — `observability-logging`, `spring-opentelemetry-tracing`
 - **Testing slices** — `spring-testing-fundamentals`, `spring-jpa-testing`, `spring-mvc-testing`, `spring-security-testing`, `spring-webflux-testing`, `spring-websocket-testing`
-- **Unit-test recipes** — `unit-test-application-events`, `bean-validation`, `boundary-conditions`, `caching`, `config-properties`, `json-serialization`, `mapper-converter`, `parameterized`, `scheduled-async`, `utility-methods`, `wiremock-rest-api`, `wiremock-standalone-docker`
+- **Unit-test recipes** — `unit-test-application-events`, `unit-test-bean-validation`, `unit-test-boundary-conditions`, `unit-test-caching`, `unit-test-config-properties`, `unit-test-json-serialization`, `unit-test-mapper-converter`, `unit-test-parameterized`, `unit-test-scheduled-async`, `unit-test-utility-methods`, `unit-test-wiremock-rest-api`, `wiremock-standalone-docker`
 
 ## Loading model — the most important section
 

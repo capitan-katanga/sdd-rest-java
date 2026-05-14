@@ -6,19 +6,20 @@ Flow-agnostic: integrates with Spec Kit, Kiro, or Claude Code natively. Provides
 
 ## Scope
 
-- REST patterns, OpenAPI, Actuator, caching, resilience, event-driven, saga
-- Persistence: Spring Data JPA, Spring Data Neo4j, AWS RDS
+- REST patterns, OpenAPI/SpringDoc, Actuator, caching, resilience (Resilience4j), event-driven, saga
+- Persistence: Spring Data JPA, Spring Data Neo4j
 - Security: Spring Security 7 + JWT/OAuth2 + Problem Details (RFC 7807)
-- Cloud: AWS SDK v2 (S3, DynamoDB, RDS, Messaging, KMS, Secrets Manager, Lambda) + Azure Container Apps
-- Containerization: Docker (multi-stage, JVM + native), GraalVM native image
-- Observability: Logback, MDC, correlation IDs
+- Spring Cloud microservices: discovery & config, gateway, Kafka, HTTP Interface clients, async/concurrency
+- Containerization: Docker (multi-stage)
+- Observability: Logback, MDC, correlation IDs, OpenTelemetry tracing
+- Documentation: OpenAPI annotations on controllers; JEP 467 `///` Markdown Javadoc on services/repositories
 - Testing: JUnit 5, Mockito, AssertJ, Testcontainers, WireMock — JPA/MVC/Security/WebFlux/WebSocket slices
 
 **Out of scope:** AI/ML, LangChain4j, Spring AI MCP, vector stores.
 
 ## Contents
 
-- **47 skills** (auto-loaded by triggers in their frontmatter `description`)
+- **41 skills** (auto-loaded by triggers in their frontmatter `description`)
 - **7 agents** (backend dev, code review, unit testing, refactor, security, architecture review, documentation)
 - **11 commands** with `sddrest.*` prefix
 - **4 rules** (error handling, language best practices, naming, project structure)

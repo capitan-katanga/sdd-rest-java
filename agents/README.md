@@ -14,7 +14,7 @@ Current roster (7):
 | `java-refactor-expert` | Targeted refactors — extract, rename, restructure |
 | `java-security-expert` | Security audits, JWT/OAuth review, secret handling |
 | `java-software-architect-review` | Higher-level architectural review |
-| `java-documentation-specialist` | Javadoc, README, API documentation generation |
+| `java-documentation-specialist` | In-code documentation under the layer split — OpenAPI annotations on `@RestController`, JEP 467 `///` Markdown Javadoc on services/repositories/exceptions |
 
 ## Loading model
 
