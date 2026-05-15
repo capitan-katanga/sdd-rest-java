@@ -2,6 +2,8 @@
 name: spring-boot-actuator
 description: Provides patterns to configure Spring Boot 4.x Actuator for production-grade monitoring — health probes (liveness/readiness/startup), secured management endpoints, and Micrometer 1.14+ metrics with OpenTelemetry/Prometheus across JVM services. Use when setting up monitoring, health checks, or metrics for Spring Boot applications. Targets Boot 4 / Spring Framework 7.
 allowed-tools: Read, Write, Bash
+version: 0.2.0
+license: Apache-2.0
 ---
 
 # Spring Boot Actuator Skill
@@ -171,21 +173,13 @@ More end-to-end samples are available in `references/examples.md`.
 - Be cautious with `/actuator/beans` and `/actuator/mappings` as they reveal internal application structure.
 
 ## Reference Materials
-- [Endpoint quick reference](references/endpoint-reference.md)
-- [Implementation examples](references/examples.md)
-- [Official documentation extract](references/endpoint-reference.md)
-- [Auditing with Actuator](references/auditing.md)
-- [Cloud Foundry integration](references/cloud-foundry.md)
-- [Enabling Actuator features](references/enabling.md)
-- [HTTP exchange recording](references/http-exchanges.md)
-- [JMX exposure](references/jmx.md)
-- [Monitoring and metrics](references/monitoring.md)
-- [Logging configuration](references/loggers.md)
-- [Metrics exporters](references/metrics.md)
-- [Observability with Micrometer](references/observability.md)
-- [Process and Monitoring](references/process-monitoring.md)
-- [Tracing](references/tracing.md)
-- Scripts directory (`scripts/`) reserved for future automation; no runtime dependencies today.
+- [Endpoint quick reference](references/endpoint-reference.md) — endpoint catalog with security defaults and tuning notes.
+- [Implementation examples](references/examples.md) — copy-pasteable configs (security, health groups, custom indicators, exporters).
+- [Metrics exporters](references/metrics.md) — Micrometer registries (Prometheus, OTLP, StatsD), tags, percentiles, histograms.
+- [Observability with Micrometer](references/observability.md) — Observation API, tracing/metrics correlation, `ObservationRegistry`.
+- [Logging configuration](references/loggers.md) — runtime log-level changes via `/actuator/loggers`.
+
+For tracing-specific patterns (OpenTelemetry exporters, propagation), use the `spring-opentelemetry-tracing` skill instead.
 
 ## Validation Checklist
 - Confirm `mvn spring-boot:run` exposes expected endpoints under `/actuator` (or custom base path).

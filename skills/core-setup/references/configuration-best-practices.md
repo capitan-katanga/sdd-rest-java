@@ -1,297 +1,238 @@
-# Configuration Best Practices for Spring Boot Applications
+# Configuration Best Practices — Spring Boot 4.x
 
 ## Contents
-- [Overview](#overview)
-- [Configuration File Format](#configuration-file-format)
-- [Configuration Profiles](#configuration-profiles)
-- [Externalized Configuration](#externalized-configuration)
-- [Configuration Properties Classes](#configuration-properties-classes)
-- [Secrets Management](#secrets-management)
-- [Common Configuration Patterns](#common-configuration-patterns)
+- [Configuration Philosophy](#configuration-philosophy)
+- [File Format and Layout](#file-format-and-layout)
+- [Profiles — Behavior, Not Values](#profiles--behavior-not-values)
+- [Environment Variables — Values, Not Behavior](#environment-variables--values-not-behavior)
+- [Externalized Configuration Hierarchy](#externalized-configuration-hierarchy)
+- [`@ConfigurationProperties` Records](#configurationproperties-records)
+- [Validation](#validation)
+- [Secrets Handling](#secrets-handling)
+- [Common Presets](#common-presets)
 - [Testing Configuration](#testing-configuration)
-- [Configuration Documentation](#configuration-documentation)
+- [Configuration Metadata Processor](#configuration-metadata-processor)
 - [Best Practices Checklist](#best-practices-checklist)
 - [References](#references)
 
-## Overview
-This guide covers configuration best practices for Spring Boot 4 applications, including profiles, externalized configuration, secrets management, and environment-specific settings.
+## Configuration Philosophy
 
-**Key Principles:**
+Two axes — never mix them:
 
-1. **Use Properties Files** (not YAML) for better tooling support and readability
-2. **Externalize Configuration** for portability across environments
-3. **Never Commit Secrets** to version control
-4. **Use Profiles** for environment-specific settings
-5. **Leverage Spring Boot's Configuration Hierarchy** for flexibility
+| What changes | Mechanism |
+|---|---|
+| **Structure / behavior** — which beans, which implementations, which auto-config flips on | **Spring Profiles** (`@Profile`, `@ConditionalOnProperty`, `spring.config.activate.on-profile`) |
+| **Values** — credentials, URLs, ports, sizes, timeouts | **Environment variables** referenced from `application.yml` via `${VAR:default}` |
 
-## Configuration File Format
+If `application-prod.yml` only differs from `application-dev.yml` in literal values, you do not have a profile difference — you have an environment difference. Collapse to one file with `${ENV_VAR}` placeholders so the same JAR / container image runs everywhere.
 
-### Properties Files (Recommended)
+Profiles legitimately change behavior:
 
-Spring Boot supports both `.properties` and `.yaml` files. **We recommend properties files** for:
+- `dev` → simple in-memory cache, H2, `ddl-auto: update`, `show-sql: true`
+- `prod` → Hibernate L2 cache, Postgres, `ddl-auto: validate`, `show-sql: false`
+- `test` → TestContainers wiring, no scheduled jobs
 
-- Better IDE autocomplete support
-- Simpler syntax and less indentation errors
-- Easier to search and grep
-- Better Git diff visualization
+Profiles **should not** carry values like `prod.host=postgres-prod.internal`. That goes in the deployment's environment variables.
 
-**Example: `application.properties`**
+## File Format and Layout
 
-```properties
-# Server Configuration
-server.port=8080
-server.compression.enabled=true
-server.compression.mime-types=text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json
-
-# Application Information
-spring.application.name=my-spring-boot-app
-spring.application.version=@project.version@
-
-# Logging Configuration
-logging.level.root=INFO
-logging.level.com.example.myapp=DEBUG
-logging.pattern.console=%d{yyyy-MM-dd HH:mm:ss} - %logger{36} - %msg%n
-
-# Database Configuration
-spring.datasource.url=${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/mydb}
-spring.datasource.username=${SPRING_DATASOURCE_USERNAME:user}
-spring.datasource.password=${SPRING_DATASOURCE_PASSWORD:password}
-spring.datasource.hikari.maximum-pool-size=10
-spring.datasource.hikari.minimum-idle=5
-
-# JPA Configuration
-spring.jpa.hibernate.ddl-auto=validate
-spring.jpa.show-sql=false
-spring.jpa.properties.hibernate.format_sql=true
-spring.jpa.open-in-view=false
-
-# Actuator Configuration
-management.endpoints.web.exposure.include=health,info,metrics,prometheus
-management.endpoint.health.show-details=when-authorized
-management.endpoint.health.probes.enabled=true
-management.metrics.export.prometheus.enabled=true
-```
-
-### Maven Property Substitution
-
-Reference Maven project properties in your configuration:
-
-```properties
-spring.application.version=@project.version@
-spring.application.name=@project.artifactId@
-```
-
-Configure Maven to filter resources in `pom.xml`:
-
-```xml
-<build>
-    <resources>
-        <resource>
-            <directory>src/main/resources</directory>
-            <filtering>true</filtering>
-        </resource>
-    </resources>
-</build>
-```
-
-## Configuration Profiles
-
-### Profile-Specific Properties
-
-Create separate property files for each environment:
+`application.yml` is the single source of truth. Do not introduce `.properties` files alongside it.
 
 ```
 src/main/resources/
-├── application.properties          # Default configuration
-├── application-dev.properties      # Development overrides
-├── application-test.properties     # Test overrides
-└── application-prod.properties     # Production overrides
+├── application.yml                # Common config + profile blocks via ---
+└── application-test.yml           # Test-only overrides (test profile)
 ```
 
-**Example: `application-dev.properties`**
+Boot also accepts `application-{profile}.yml` as separate files if a profile gets large. Prefer multi-document blocks (`---`) inside one `application.yml` until size makes that painful.
 
-```properties
-# Development-specific settings
-spring.jpa.show-sql=true
-spring.jpa.hibernate.ddl-auto=update
-logging.level.com.example.myapp=DEBUG
+**Single-file layout with profile blocks:**
 
-# Use local PostgreSQL
-spring.datasource.url=jdbc:postgresql://localhost:5432/mydb_dev
+```yaml
+spring:
+  application:
+    name: ${SPRING_APPLICATION_NAME:my-service}
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    hikari:
+      maximum-pool-size: ${HIKARI_MAX_POOL_SIZE:10}
+      minimum-idle: ${HIKARI_MIN_IDLE:5}
+  threads:
+    virtual:
+      enabled: true
+  jpa:
+    open-in-view: false
+
+server:
+  port: ${SERVER_PORT:8080}
+  compression:
+    enabled: true
+    mime-types: text/html,text/xml,text/plain,text/css,application/javascript,application/json
+  shutdown: graceful
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: when-authorized
+      probes:
+        enabled: true
+
+logging:
+  level:
+    root: INFO
+
+---
+spring.config.activate.on-profile: dev
+spring.jpa.hibernate.ddl-auto: update
+spring.jpa.show-sql: true
+logging.level.com.example: DEBUG
+
+---
+spring.config.activate.on-profile: prod
+spring.jpa.hibernate.ddl-auto: validate
+spring.jpa.show-sql: false
+logging.level.com.example: INFO
 ```
 
-**Example: `application-prod.properties`**
+Notes:
 
-```properties
-# Production-specific settings
-spring.jpa.show-sql=false
-spring.jpa.hibernate.ddl-auto=validate
-logging.level.com.example.myapp=INFO
+- Values like the DB URL, secrets, and pool sizes use `${VAR}` — they are env-driven, not profile-driven.
+- Profile blocks change behavior (`ddl-auto`, `show-sql`, log levels) — not literal values.
 
-# Use environment variables for sensitive data
-spring.datasource.url=${SPRING_DATASOURCE_URL}
-spring.datasource.username=${SPRING_DATASOURCE_USERNAME}
-spring.datasource.password=${SPRING_DATASOURCE_PASSWORD}
-```
+## Profiles — Behavior, Not Values
 
-### Activating Profiles
+### Activation
 
-**Via Command Line:**
-
-```bash
-# Single profile
-java -jar app.jar --spring.profiles.active=prod
-
-# Multiple profiles (comma-separated)
-java -jar app.jar --spring.profiles.active=prod,monitoring
-```
-
-**Via Environment Variable:**
+Via environment variable (preferred):
 
 ```bash
 export SPRING_PROFILES_ACTIVE=prod
-java -jar app.jar
 ```
 
-**Via Docker:**
+Via JVM arg:
 
 ```bash
-docker run -e SPRING_PROFILES_ACTIVE=prod -p 8080:8080 myapp:latest
+java -jar app.jar --spring.profiles.active=prod
 ```
 
-**Via application.properties (not recommended for production):**
+Via Docker:
 
-```properties
-spring.profiles.active=dev
+```bash
+docker run -e SPRING_PROFILES_ACTIVE=prod -p 8080:8080 my-service:1.0.0
 ```
 
-### Profile-Specific Beans
+### Conditional beans
 
-Use `@Profile` annotation to conditionally register beans:
+Use `@Profile` to switch implementations:
 
 ```java
 @Configuration
-public class CacheConfiguration {
+public class NotificationConfig {
 
     @Bean
-    @Profile("dev")
-    public CacheManager simpleCacheManager() {
-        return new ConcurrentMapCacheManager();
+    @Profile("!prod")
+    NotificationGateway loggingGateway() {
+        return new LoggingNotificationGateway();
     }
 
     @Bean
     @Profile("prod")
-    public CacheManager redisCacheManager(RedisConnectionFactory factory) {
-        return RedisCacheManager.builder(factory).build();
+    NotificationGateway sendgridGateway(SendgridProperties props) {
+        return new SendgridNotificationGateway(props);
     }
 }
 ```
 
-## Externalized Configuration
+Use `@ConditionalOnProperty` when the switch is feature-flag-shaped rather than environment-shaped:
 
-### Configuration Hierarchy
-
-Spring Boot loads configuration in the following order (later sources override earlier):
-
-1. Default properties (SpringApplication.setDefaultProperties)
-2. `@PropertySource` annotations
-3. Config data files (`application.properties`)
-4. Profile-specific config files (`application-{profile}.properties`)
-5. OS environment variables
-6. Java System properties
-7. Command line arguments
-
-### Environment Variables
-
-**Always use environment variables for sensitive data in production:**
-
-```properties
-# application-prod.properties
-spring.datasource.url=${SPRING_DATASOURCE_URL}
-spring.datasource.username=${SPRING_DATASOURCE_USERNAME}
-spring.datasource.password=${SPRING_DATASOURCE_PASSWORD}
-
-# Custom application properties
-app.api.key=${API_KEY}
-app.api.secret=${API_SECRET}
+```java
+@Bean
+@ConditionalOnProperty(name = "app.features.audit", havingValue = "true")
+AuditListener auditListener() { return new AuditListener(); }
 ```
 
-**Convention:** Environment variables use UPPERCASE with underscores:
+## Environment Variables — Values, Not Behavior
 
-```bash
-# application.properties: server.port
-export SERVER_PORT=8080
+Reference them with placeholders. Always provide a default for safe local startup, except for true secrets:
 
-# application.properties: spring.datasource.url
-export SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/mydb
+```yaml
+server:
+  port: ${SERVER_PORT:8080}                  # default 8080 locally
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}            # no default — must be supplied
+    password: ${SPRING_DATASOURCE_PASSWORD}  # no default — must be supplied
 ```
 
-### Docker and Environment Variables
+**Naming convention:** Spring Boot maps `UPPER_SNAKE_CASE` env vars to dotted property keys. `SPRING_DATASOURCE_URL` maps to `spring.datasource.url`. You usually don't need to write the placeholder — Spring binds the env var automatically — but explicit `${...}` placeholders make the contract visible in the YAML.
 
-**docker-compose.yml:**
+**Docker Compose:**
 
 ```yaml
 services:
-  app:
-    image: myapp:latest
+  my-service:
+    image: my-service:1.0.0
     ports:
       - "8080:8080"
     environment:
       SPRING_PROFILES_ACTIVE: prod
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/mydb
-      SPRING_DATASOURCE_USERNAME: user
-      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}  # From .env file
+      SPRING_DATASOURCE_USERNAME: app
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}  # from .env, never committed
     env_file:
-      - .env  # Load additional variables from file
+      - .env
 ```
 
-**.env file (never commit to Git):**
+**`.env` (gitignored):**
 
-```bash
-DB_PASSWORD=secret-password
-API_KEY=your-api-key
-API_SECRET=your-api-secret
+```
+DB_PASSWORD=super-secret
+JWT_SECRET=another-super-secret
 ```
 
-## Configuration Properties Classes
+## Externalized Configuration Hierarchy
 
-### Type-Safe Configuration
+Spring Boot reads configuration in this order (later sources override earlier):
 
-Create strongly-typed configuration classes instead of using `@Value`:
+1. Default properties (`SpringApplication.setDefaultProperties`)
+2. `@PropertySource` annotations
+3. Config data files (`application.yml`)
+4. Profile-specific config (`application-{profile}.yml` or multi-doc blocks)
+5. OS environment variables
+6. Java system properties (`-Dkey=value`)
+7. Command-line arguments
+
+In practice: a literal in `application.yml` is the default; env vars and CLI args override at runtime.
+
+## `@ConfigurationProperties` Records
+
+Use immutable Java records — no setters, no `@Value` fan-out.
 
 ```java
-@ConfigurationProperties(prefix = "app")
-public class ApplicationProperties {
-
-    private String name;
-    private ApiConfig api = new ApiConfig();
-    private SecurityConfig security = new SecurityConfig();
-
-    // Getters and setters
-
-    public static class ApiConfig {
-        private String url;
-        private int timeout = 30;
-        private int retryAttempts = 3;
-
-        // Getters and setters
-    }
-
-    public static class SecurityConfig {
-        private boolean enabled = true;
-        private String jwtSecret;
-        private long jwtExpiration = 86400;
-
-        // Getters and setters
-    }
+@ConfigurationProperties("app.payments")
+public record PaymentsProperties(
+    URI gatewayUrl,
+    Duration timeout,
+    int maxRetries,
+    Security security
+) {
+    public record Security(boolean enabled, String apiKey) {}
 }
 ```
 
-**Enable configuration properties:**
+Enable scanning once at the main class:
 
 ```java
 @SpringBootApplication
-@EnableConfigurationProperties(ApplicationProperties.class)
+@ConfigurationPropertiesScan
 public class Application {
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
@@ -299,73 +240,44 @@ public class Application {
 }
 ```
 
-**Use in your code:**
+Bind from YAML:
+
+```yaml
+app:
+  payments:
+    gateway-url: ${PAYMENTS_GATEWAY_URL}
+    timeout: 5s
+    max-retries: 3
+    security:
+      enabled: true
+      api-key: ${PAYMENTS_API_KEY}
+```
+
+Inject by type:
 
 ```java
-@RestController
-public class ApiController {
-
-    private final ApplicationProperties properties;
-
-    public ApiController(ApplicationProperties properties) {
-        this.properties = properties;
-    }
-
-    @GetMapping("/api/info")
-    public Map<String, Object> getInfo() {
-        return Map.of(
-            "name", properties.getName(),
-            "apiUrl", properties.getApi().getUrl(),
-            "securityEnabled", properties.getSecurity().isEnabled()
-        );
-    }
+@Service
+public class PaymentsService {
+    private final PaymentsProperties props;
+    public PaymentsService(PaymentsProperties props) { this.props = props; }
 }
 ```
 
-**Configuration in application.properties:**
+## Validation
 
-```properties
-app.name=My Application
-app.api.url=https://api.example.com
-app.api.timeout=30
-app.api.retry-attempts=3
-app.security.enabled=true
-app.security.jwt-secret=${JWT_SECRET}
-app.security.jwt-expiration=86400
-```
-
-### Validation
-
-Add validation to configuration properties:
+Apply Jakarta Validation annotations on record components. Spring runs them at startup when `@Validated` is present.
 
 ```java
-@ConfigurationProperties(prefix = "app")
+@ConfigurationProperties("app.payments")
 @Validated
-public class ApplicationProperties {
-
-    @NotBlank
-    private String name;
-
-    @Valid
-    private ApiConfig api = new ApiConfig();
-
-    public static class ApiConfig {
-        @NotBlank
-        @URL
-        private String url;
-
-        @Min(1)
-        @Max(300)
-        private int timeout = 30;
-
-        // Getters and setters
-    }
-
-    // Getters and setters
-}
+public record PaymentsProperties(
+    @NotNull URI gatewayUrl,
+    @NotNull @DurationMin(seconds = 1) Duration timeout,
+    @Min(0) @Max(10) int maxRetries
+) {}
 ```
 
-Add validation dependency:
+Dependency:
 
 ```xml
 <dependency>
@@ -374,256 +286,156 @@ Add validation dependency:
 </dependency>
 ```
 
-## Secrets Management
+A bad value fails the application context at startup with a precise error — far better than discovering it via a `NullPointerException` three calls deep.
 
-### Never Commit Secrets
+## Secrets Handling
 
-**❌ NEVER do this:**
+**Never commit secrets.** Always reference them via env vars:
 
-```properties
-# application.properties - WRONG!
-spring.datasource.password=mysecretpassword
-app.api.key=abc123xyz
+```yaml
+spring:
+  datasource:
+    password: ${SPRING_DATASOURCE_PASSWORD}
+app:
+  security:
+    jwt-secret: ${JWT_SECRET}
 ```
 
-**✅ DO this instead:**
+**Local development:**
 
-```properties
-# application.properties - CORRECT!
-spring.datasource.password=${SPRING_DATASOURCE_PASSWORD}
-app.api.key=${API_KEY}
+- `.env` file with Docker Compose `env_file:` (gitignore the `.env`)
+- Shell exports in `.bashrc` / `.zshrc`
+- IDE run-configuration env vars
+
+**Production:**
+
+- Kubernetes Secrets mounted as env vars
+- Spring Cloud Config Server with an encrypted backend (Vault, JCE)
+- Cloud secret managers (AWS Secrets Manager, GCP Secret Manager) via sidecars or init containers
+
+## Common Presets
+
+### HikariCP
+
+```yaml
+spring:
+  datasource:
+    hikari:
+      maximum-pool-size: ${HIKARI_MAX_POOL_SIZE:20}
+      minimum-idle: ${HIKARI_MIN_IDLE:5}
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      pool-name: ${spring.application.name}-hikari
 ```
 
-### Local Development
+### Jackson
 
-For local development, use one of these approaches:
-
-**Option 1: Environment Variables**
-
-```bash
-# .bashrc or .zshrc
-export SPRING_DATASOURCE_PASSWORD=devpassword
-export API_KEY=dev-api-key
+```yaml
+spring:
+  jackson:
+    date-format: yyyy-MM-dd'T'HH:mm:ss.SSSZ
+    time-zone: UTC
+    default-property-inclusion: non_null
+    deserialization:
+      fail-on-unknown-properties: true
+      # Required when JPA entities have primitive fields. Hibernate's bytecode
+      # enhancer generates constructors that Jackson 3 uses for deserialization,
+      # which fails when primitive fields are absent from the payload.
+      fail-on-null-for-primitives: false
 ```
 
-**Option 2: IDE Run Configuration**
+### CORS (global)
 
-Set environment variables in your IDE's run configuration (IntelliJ IDEA, VS Code, Eclipse).
-
-**Option 3: application-local.properties (gitignored)**
-
-```properties
-# application-local.properties
-spring.datasource.password=devpassword
-app.api.key=dev-api-key
+```yaml
+spring:
+  web:
+    cors:
+      allowed-origins: ${CORS_ALLOWED_ORIGINS:https://example.com}
+      allowed-methods: GET,POST,PUT,DELETE
+      allowed-headers: "*"
+      allow-credentials: true
+      max-age: 3600
 ```
 
-Add to `.gitignore`:
+For fine-grained per-route CORS, use `WebMvcConfigurer#addCorsMappings` in Java config.
 
-```
-application-local.properties
-.env
-*.local.properties
-```
+### Actuator (minimal production-safe set)
 
-### Production Secrets Management
-
-**Container Environments:**
-
-```bash
-# Kubernetes Secrets
-kubectl create secret generic app-secrets \
-  --from-literal=database-password=prod-password \
-  --from-literal=api-key=prod-api-key
-
-# Or use Spring Cloud Config Server with an encrypted backend (Vault, JCE)
-```
-
-## Common Configuration Patterns
-
-### Database Connection Pool
-
-```properties
-# HikariCP (default in Spring Boot)
-spring.datasource.hikari.maximum-pool-size=20
-spring.datasource.hikari.minimum-idle=5
-spring.datasource.hikari.connection-timeout=30000
-spring.datasource.hikari.idle-timeout=600000
-spring.datasource.hikari.max-lifetime=1800000
-spring.datasource.hikari.pool-name=MyAppHikariPool
+```yaml
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: when-authorized
+      probes:
+        enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+      environment: ${spring.profiles.active:default}
 ```
 
-### Logging
+### Server (graceful shutdown + compression)
 
-```properties
-# Root level
-logging.level.root=INFO
+```yaml
+server:
+  port: ${SERVER_PORT:8080}
+  shutdown: graceful
+  compression:
+    enabled: true
+    mime-types: text/html,text/xml,text/plain,text/css,application/javascript,application/json
 
-# Package level
-logging.level.com.example.myapp=DEBUG
-logging.level.org.springframework.web=DEBUG
-logging.level.org.hibernate.SQL=DEBUG
-logging.level.org.hibernate.type.descriptor.sql.BasicBinder=TRACE
-
-# Console pattern
-logging.pattern.console=%d{yyyy-MM-dd HH:mm:ss} - %logger{36} - %msg%n
-
-# File logging
-logging.file.name=logs/application.log
-logging.file.max-size=10MB
-logging.file.max-history=30
-```
-
-### Actuator Endpoints
-
-```properties
-# Expose endpoints
-management.endpoints.web.exposure.include=health,info,metrics,prometheus
-
-# Health check details
-management.endpoint.health.show-details=when-authorized
-management.endpoint.health.probes.enabled=true
-
-# Metrics
-management.metrics.export.prometheus.enabled=true
-management.metrics.tags.application=${spring.application.name}
-management.metrics.tags.environment=${spring.profiles.active}
-```
-
-### Server Configuration
-
-```properties
-# Port
-server.port=8080
-
-# Context path (if needed)
-# server.servlet.context-path=/api
-
-# Compression
-server.compression.enabled=true
-server.compression.mime-types=text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json
-
-# Graceful shutdown
-server.shutdown=graceful
-spring.lifecycle.timeout-per-shutdown-phase=30s
-
-# Thread pool
-server.tomcat.threads.max=200
-server.tomcat.threads.min-spare=10
-```
-
-### Jackson JSON Configuration
-
-```properties
-# Pretty print (dev only)
-spring.jackson.serialization.indent-output=false
-
-# Date format
-spring.jackson.date-format=yyyy-MM-dd'T'HH:mm:ss.SSSZ
-spring.jackson.time-zone=UTC
-
-# Include non-null fields only
-spring.jackson.default-property-inclusion=non_null
-
-# Fail on unknown properties (strict mode)
-spring.jackson.deserialization.fail-on-unknown-properties=true
-
-# Required when using JPA entities with primitive fields (boolean, int, etc.)
-# Hibernate's bytecode enhancer generates constructors that Jackson 3 uses for
-# deserialization, causing failures when primitive fields are absent from JSON.
-spring.jackson.deserialization.fail-on-null-for-primitives=false
-```
-
-### CORS Configuration
-
-```properties
-# Global CORS
-spring.web.cors.allowed-origins=https://example.com
-spring.web.cors.allowed-methods=GET,POST,PUT,DELETE
-spring.web.cors.allowed-headers=*
-spring.web.cors.allow-credentials=true
-spring.web.cors.max-age=3600
-```
-
-Or use Java configuration for more control:
-
-```java
-@Configuration
-public class WebConfig {
-
-    @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/api/**")
-                    .allowedOrigins("https://example.com")
-                    .allowedMethods("GET", "POST", "PUT", "DELETE")
-                    .allowedHeaders("*")
-                    .allowCredentials(true)
-                    .maxAge(3600);
-            }
-        };
-    }
-}
+spring:
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
 ```
 
 ## Testing Configuration
 
-### Test Properties
+Create `src/test/resources/application-test.yml` for integration-test overrides:
 
-Create `application-test.properties` for integration tests:
-
-```properties
-# Use H2 for fast tests
-spring.datasource.url=jdbc:h2:mem:testdb
-spring.datasource.driver-class-name=org.h2.Driver
-
-# Or use TestContainers with PostgreSQL (recommended)
-# Configuration is automatic with @TestContainers
-
-# Disable Docker Compose support in tests
-spring.docker.compose.enabled=false
-
-# Logging
-logging.level.com.example.myapp=DEBUG
+```yaml
+spring:
+  datasource:
+    url: jdbc:tc:postgresql:16:///testdb  # TestContainers-managed
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+  docker:
+    compose:
+      enabled: false                       # don't auto-start compose in tests
+logging:
+  level:
+    com.example: DEBUG
 ```
 
-### Test Configuration Classes
+Test class:
 
 ```java
-@TestConfiguration
-public class TestConfig {
-
-    @Bean
-    @Primary
-    public DataSource testDataSource() {
-        // Custom test datasource configuration
-        return DataSourceBuilder.create()
-            .url("jdbc:h2:mem:testdb")
-            .build();
-    }
+@SpringBootTest
+@ActiveProfiles("test")
+class OrdersIntegrationTest {
+    // ...
 }
 ```
 
-### Property Overrides in Tests
+Ad-hoc overrides per test class:
 
 ```java
 @SpringBootTest
 @TestPropertySource(properties = {
-    "spring.datasource.url=jdbc:h2:mem:testdb",
-    "spring.jpa.hibernate.ddl-auto=create-drop"
+    "app.payments.max-retries=0"
 })
-class MyIntegrationTest {
-    // Test methods
-}
+class PaymentsNoRetryTest { /* ... */ }
 ```
 
-## Configuration Documentation
+## Configuration Metadata Processor
 
-### Documenting Custom Properties
-
-Use `spring-boot-configuration-processor` to generate metadata:
+Generate IDE autocomplete metadata for your custom properties:
 
 ```xml
 <dependency>
@@ -633,59 +445,39 @@ Use `spring-boot-configuration-processor` to generate metadata:
 </dependency>
 ```
 
-Add JavaDoc to configuration classes:
+Combined with JEP 467 Markdown Javadoc on record components, IDEs show descriptions inline:
 
 ```java
-@ConfigurationProperties(prefix = "app")
-public class ApplicationProperties {
+@ConfigurationProperties("app.payments")
+public record PaymentsProperties(
+    /// The payments gateway base URL.
+    URI gatewayUrl,
 
-    /**
-     * The name of the application.
-     */
-    private String name;
+    /// Timeout for a single request. Defaults to 5s.
+    Duration timeout,
 
-    /**
-     * API configuration.
-     */
-    private ApiConfig api = new ApiConfig();
-
-    public static class ApiConfig {
-        /**
-         * The base URL of the API.
-         */
-        private String url;
-
-        /**
-         * Timeout in seconds for API calls.
-         */
-        private int timeout = 30;
-
-        // Getters and setters
-    }
-
-    // Getters and setters
-}
+    /// Number of retries on transient failures (network, 5xx).
+    int maxRetries
+) {}
 ```
-
-This generates `spring-configuration-metadata.json` for IDE autocomplete.
 
 ## Best Practices Checklist
 
-- [ ] Use `.properties` files instead of YAML
-- [ ] Create profile-specific configuration files
-- [ ] Use `@ConfigurationProperties` for type-safe configuration
-- [ ] Never commit secrets to version control
-- [ ] Use environment variables for sensitive data in production
-- [ ] Add validation to configuration properties
-- [ ] Document custom properties with JavaDoc
-- [ ] Use meaningful default values
-- [ ] Test configuration with different profiles
-- [ ] Use Maven property substitution for build-time values
-- [ ] Enable configuration metadata processor for IDE support
+- [ ] One `application.yml`, YAML only — no `.properties`.
+- [ ] Profiles change **behavior** (beans, conditions, auto-config). Env vars change **values** (URLs, secrets, sizes).
+- [ ] All credentials and per-environment values use `${ENV_VAR}` placeholders.
+- [ ] No secrets committed; `.env` and `*.local.*` are gitignored.
+- [ ] Custom config uses `@ConfigurationProperties` records, not `@Value`.
+- [ ] `@Validated` on properties records that have required or bounded fields.
+- [ ] `@ConfigurationPropertiesScan` on the main class.
+- [ ] Sensible defaults in placeholders for local startup (`${SERVER_PORT:8080}`).
+- [ ] `spring-boot-configuration-processor` on the classpath for IDE metadata.
+- [ ] `spring.threads.virtual.enabled: true` for new services (see `spring-async-concurrency`).
+- [ ] `management.endpoints.web.exposure.include` lists only what you need — never `*` in production.
 
 ## References
 
-- [Spring Boot Externalized Configuration](https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.external-config)
-- [Configuration Properties](https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.external-config.typesafe-configuration-properties)
-- [Profiles](https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.profiles)
-- [Configuration Metadata](https://docs.spring.io/spring-boot/docs/current/reference/html/configuration-metadata.html)
+- [Spring Boot Externalized Configuration](https://docs.spring.io/spring-boot/reference/features/external-config.html)
+- [`@ConfigurationProperties`](https://docs.spring.io/spring-boot/reference/features/external-config.html#features.external-config.typesafe-configuration-properties)
+- [Profiles](https://docs.spring.io/spring-boot/reference/features/profiles.html)
+- [Configuration Metadata](https://docs.spring.io/spring-boot/specification/configuration-metadata/)

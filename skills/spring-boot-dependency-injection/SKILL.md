@@ -2,6 +2,8 @@
 name: spring-boot-dependency-injection
 description: Provides dependency injection patterns for Spring Boot 4.x projects (Spring Framework 7, Jakarta EE 11), including constructor-first design with records, optional collaborator handling, bean selection with @Qualifier and @Primary, and wiring validation. Use when creating services and configurations, replacing field injection, or troubleshooting ambiguous or fragile Spring wiring. Targets Boot 4 / Jakarta EE 11.
 allowed-tools: Read, Write, Edit, Bash, Glob, Grep
+version: 0.2.0
+license: Apache-2.0
 ---
 
 # Spring Boot Dependency Injection
@@ -180,10 +182,8 @@ Use `@Primary` for the default path and `@Qualifier` only where a specific varia
 
 - `references/reference.md`
 - `references/examples.md`
-- `references/spring-official-dependency-injection.md`
 
 ## Related Skills
 
-- `spring-boot-crud-patterns`
 - `spring-boot-rest-api-standards`
 - `spring-testing-fundamentals`

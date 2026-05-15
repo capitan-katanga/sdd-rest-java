@@ -2,13 +2,17 @@
 name: spring-async-concurrency
 description: "Concurrency patterns for Spring Boot 4 on Java 25: @Async + @EnableAsync, TaskExecutor / ThreadPoolTaskExecutor sizing, AsyncConfigurer customization, CompletableFuture composition (thenApply / thenCompose / allOf / anyOf / exception handling), Java 21+ Virtual Threads (Executors.newVirtualThreadPerTaskExecutor, spring.threads.virtual.enabled, Thread.ofVirtual()), StructuredTaskScope for structured concurrency (Java 25), MDC and SecurityContext propagation across thread boundaries with TaskDecorator. Targets development of concurrent code — testing of @Async is covered by unit-test-scheduled-async. Triggers: @Async, @EnableAsync, AsyncConfigurer, TaskExecutor, ThreadPoolTaskExecutor, SimpleAsyncTaskExecutor, VirtualThreadTaskExecutor, spring.threads.virtual.enabled, Executors.newVirtualThreadPerTaskExecutor, Executors.newFixedThreadPool, CompletableFuture, supplyAsync, thenCompose, allOf, anyOf, exceptionally, handle, Thread.ofVirtual, Thread.startVirtualThread, StructuredTaskScope, StructuredTaskScope.ShutdownOnFailure, StructuredTaskScope.ShutdownOnSuccess, TaskDecorator, ContextSnapshot, MdcTaskDecorator, DelegatingSecurityContextExecutor."
 allowed-tools: Read, Write, Edit, Bash, Glob, Grep
-version: 0.1.0
+version: 0.2.0
 license: Apache-2.0
 ---
 
 # Spring Async & Modern Java Concurrency
 
-Concurrency for Spring Boot 4 services on Java 25: Spring's `@Async`, `TaskExecutor` sizing, `CompletableFuture` composition, Virtual Threads, and `StructuredTaskScope`.
+Concurrency for Spring Boot 4 services on Java 25. **Default to virtual threads.** Platform-thread pools are only justified for tight, sustained CPU-bound loops where pool isolation matters — for everything else (HTTP, DB, message brokers, fan-out IO) use virtual threads.
+
+## Golden Rule
+
+**Never open a platform thread when a virtual thread will do.** Java 25's virtual threads are cheap, schedulable, and observable. `Executors.newVirtualThreadPerTaskExecutor()` and `spring.threads.virtual.enabled=true` are the defaults — reach for `ThreadPoolTaskExecutor` only when you can justify the loss of elasticity (e.g. an isolated CPU pool with `Runtime.availableProcessors()` workers for crypto, image, or codec work).
 
 ## Tested With
 
@@ -20,7 +24,7 @@ Concurrency for Spring Boot 4 services on Java 25: Spring's `@Async`, `TaskExecu
 ## Do NOT Use This Skill When
 
 - Writing tests for `@Async` / `@Scheduled` methods → use `unit-test-scheduled-async`.
-- Building reactive pipelines (`Mono` / `Flux`, schedulers, backpressure) → out of scope. This skill is for **imperative** concurrency. Reactive code lives behind WebFlux, which we deliberately treat as a separate stack — see `spring-webflux-testing` for the testing side.
+- Building reactive pipelines (`Mono` / `Flux`, schedulers, backpressure) → out of scope. This skill is for **imperative** concurrency on virtual threads; WebFlux is not a target stack.
 - Tuning Kafka consumer concurrency → use `spring-kafka-advanced` (different concern: container-level concurrency, not per-method async).
 - Tuning Tomcat / Netty worker threads at the server level → that's HTTP server config, not application concurrency. Stay in `application.yml` (e.g., `server.tomcat.threads.max`).
 
@@ -36,48 +40,44 @@ Concurrency for Spring Boot 4 services on Java 25: Spring's `@Async`, `TaskExecu
 
 ## Quick Reference
 
-**Enable `@Async`:**
+**Enable virtual threads globally (default for new services):**
+```yaml
+spring:
+  threads:
+    virtual:
+      enabled: true
+```
+That switches Tomcat workers, the `@Async` default executor, `@Scheduled`, and Spring's task executors to virtual threads in one move. Combine with `@EnableAsync` to use `@Async` annotations:
 ```java
 @SpringBootApplication
 @EnableAsync
 public class Application { }
 ```
-`@EnableAsync` without arguments uses a `SimpleAsyncTaskExecutor`, which creates a fresh thread per call. Acceptable for low-volume background tasks; **not** acceptable as a default for production. Always define a `TaskExecutor` bean.
 
-**Platform-thread pool (CPU- or moderately IO-bound):**
-```java
-@Configuration
-public class AsyncConfig {
-
-    @Bean(name = "ordersExecutor")
-    TaskExecutor ordersExecutor() {
-        ThreadPoolTaskExecutor exec = new ThreadPoolTaskExecutor();
-        exec.setCorePoolSize(8);
-        exec.setMaxPoolSize(32);
-        exec.setQueueCapacity(200);
-        exec.setKeepAliveSeconds(60);
-        exec.setThreadNamePrefix("orders-async-");
-        exec.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
-        exec.setWaitForTasksToCompleteOnShutdown(true);
-        exec.setAwaitTerminationSeconds(30);
-        exec.initialize();
-        return exec;
-    }
-}
-```
-
-**Virtual-thread executor (Java 21+/25 — IO-bound work):**
+**Explicit virtual-thread executor (when you want a named bean for `@Async("name")`):**
 ```java
 @Bean(name = "ioExecutor")
 TaskExecutor virtualThreadExecutor() {
     return new TaskExecutorAdapter(Executors.newVirtualThreadPerTaskExecutor());
 }
 ```
-Or enable virtual threads globally (Boot 4):
-```yaml
-spring.threads.virtual.enabled: true
+
+**Platform-thread pool — only for sustained CPU-bound work that needs isolation:**
+```java
+@Bean(name = "cpuExecutor")
+TaskExecutor cpuExecutor() {
+    int cores = Runtime.getRuntime().availableProcessors();
+    ThreadPoolTaskExecutor exec = new ThreadPoolTaskExecutor();
+    exec.setCorePoolSize(cores);
+    exec.setMaxPoolSize(cores);
+    exec.setQueueCapacity(50);
+    exec.setThreadNamePrefix("cpu-");
+    exec.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+    exec.initialize();
+    return exec;
+}
 ```
-That switches Tomcat workers, `@Async` default executor, `@Scheduled`, and Spring's task executors to virtual threads. **One flip, many implications** — see anti-patterns below.
+Use this only when profiling shows a CPU-bound hotspot (hashing, image processing, codec work) that benefits from a bounded pool. The default answer is virtual threads.
 
 **`@Async` with named executor and `CompletableFuture` return:**
 ```java
@@ -156,28 +156,29 @@ TaskExecutor ordersExecutor(TaskDecorator decorator) {
 
 ## Instructions
 
-1. **Classify the work first.** CPU-bound → bounded platform-thread pool (`max ≈ cores`). IO-bound → virtual threads or a much larger platform pool. Mixed → split into two executors with different sizing.
-2. **Never use the default `SimpleAsyncTaskExecutor` in production.** It creates a fresh thread per task with no upper bound — a slow downstream can OOM your service.
-3. **Always name your `@Async` executors** (`@Async("ordersExecutor")`) and bean names (`name = "ordersExecutor"`). Spring picks executors by name; collisions when two pools share a name are silent and surprising.
-4. **Set `setRejectedExecutionHandler` explicitly.** Default is `AbortPolicy` (throws). `CallerRunsPolicy` gives natural backpressure for HTTP-driven workloads. Pick deliberately.
-5. **For virtual threads, audit `synchronized` and `ThreadLocal` usage.** Virtual threads pin to their carrier while inside `synchronized` blocks — long `synchronized` sections defeat the model. Replace with `ReentrantLock`. `ThreadLocal` works but loses some of the lightweight-thread benefit.
-6. **Use `StructuredTaskScope` for fan-out within a single request.** It binds child tasks' lifetime to the method's stack frame — cancellation, exception propagation, and resource cleanup all become local concerns.
+1. **Default to virtual threads.** Enable `spring.threads.virtual.enabled=true` for new services. For explicit `@Async` executors, use `Executors.newVirtualThreadPerTaskExecutor()` wrapped in `TaskExecutorAdapter`. Reach for a `ThreadPoolTaskExecutor` only when a profiler shows sustained CPU contention that benefits from bounded parallelism.
+2. **Audit `synchronized` and `ThreadLocal` before enabling virtual threads.** Virtual threads pin to their carrier inside `synchronized` blocks — long sections (file IO, network calls) erase the benefit. Replace with `ReentrantLock`. `ThreadLocal` still works but loses some of the lightweight-thread advantage.
+3. **Never use the default `SimpleAsyncTaskExecutor` in production.** With virtual threads enabled it's fine for `@Async`; without them, it creates an unbounded supply of platform threads and can OOM the service.
+4. **Always name your `@Async` executors** (`@Async("ioExecutor")`) and bean names (`name = "ioExecutor"`). Spring picks executors by name; silent name collisions are surprising in production.
+5. **If you do create a `ThreadPoolTaskExecutor`, set `setRejectedExecutionHandler` explicitly.** `AbortPolicy` (default) throws; `CallerRunsPolicy` gives natural backpressure for HTTP-driven workloads. Pick deliberately.
+6. **Use `StructuredTaskScope` for fan-out within a single request.** It binds child tasks' lifetime to the method's stack frame and uses virtual threads by default — cancellation, exception propagation, and resource cleanup all become local concerns.
 7. **Propagate MDC and `SecurityContext` deliberately.** Async tasks don't inherit them automatically. Use `TaskDecorator` (Spring) or `ContextSnapshot` (Micrometer Context Propagation) — pick one approach per service to avoid double wrapping.
 8. **Mind `@Async` + `@Transactional`.** A `@Transactional` method called from `@Async` starts a **new** transaction; the caller's transaction has nothing to do with the async work. Don't expect a single atomic boundary.
 9. **Test concurrency with `Awaitility`** rather than `Thread.sleep`. See `unit-test-scheduled-async` for the testing recipes.
 
 ## Examples
 
-### Two pools — IO and CPU split
+### Two executors — virtual default + isolated CPU pool
 ```java
 @Bean(name = "ioExecutor")
 TaskExecutor ioExecutor() {
-    // Lots of blocking IO (DB, HTTP) → virtual threads
+    // Default for everything IO-shaped: HTTP, DB, message brokers, file IO
     return new TaskExecutorAdapter(Executors.newVirtualThreadPerTaskExecutor());
 }
 
 @Bean(name = "cpuExecutor")
 TaskExecutor cpuExecutor() {
+    // Reserved for sustained CPU work (hashing, image, codec). Profile first.
     int cores = Runtime.getRuntime().availableProcessors();
     ThreadPoolTaskExecutor exec = new ThreadPoolTaskExecutor();
     exec.setCorePoolSize(cores);
@@ -188,7 +189,7 @@ TaskExecutor cpuExecutor() {
     return exec;
 }
 ```
-`@Async("ioExecutor")` for external calls, `@Async("cpuExecutor")` for hashing / serialization / image work.
+`@Async("ioExecutor")` for external calls (the common case), `@Async("cpuExecutor")` only for documented CPU hotspots.
 
 ### Pipeline composition
 ```java
@@ -225,20 +226,20 @@ Useful for the occasional one-off; for collections of work use an executor.
 
 ## Best Practices
 
-- **Bound everything.** Either pool size or queue capacity. Unbounded queues hide problems until OOM.
-- **Use virtual threads for IO, platform threads for CPU.** Don't put hot CPU loops on virtual threads — they don't get scheduling priority benefits and you lose pool isolation.
-- **Name threads with a meaningful prefix.** `orders-async-3` in a log line is gold; `pool-2-thread-1` is noise.
-- **Prefer `StructuredTaskScope` to manual `CompletableFuture.allOf` when forks share a lifetime.** Structured concurrency catches "leaked" tasks at compile/runtime; `allOf` does not.
-- **Always set timeouts on `CompletableFuture` chains** with `orTimeout` / `completeOnTimeout`. Long-tail latencies on external services will pile up in a queue otherwise.
+- **Virtual threads first.** Enable `spring.threads.virtual.enabled=true`. Only introduce a `ThreadPoolTaskExecutor` after profiling proves a CPU-bound hotspot needs bounded parallelism.
+- **Name threads with a meaningful prefix.** `orders-async-3` in a log line is gold; `pool-2-thread-1` is noise. Virtual threads support naming via `Thread.ofVirtual().name(...)` and `VirtualThreadTaskExecutor("prefix-")`.
+- **Prefer `StructuredTaskScope` to manual `CompletableFuture.allOf` when forks share a lifetime.** Structured concurrency catches "leaked" tasks at runtime; `allOf` does not. The scope's default factory is virtual threads.
+- **Always set timeouts on `CompletableFuture` chains** with `orTimeout` / `completeOnTimeout`. Long-tail latencies on external services will pile up otherwise.
 - **Avoid leaking `Future` references past method boundaries.** A `Future` returned to a caller is a hidden subscription — easy to forget to consume. Either `join()` synchronously or compose further before returning.
 
 ## Anti-patterns
 
+- Don't open a platform thread when a virtual thread will do. `new Thread(...)`, `Executors.newFixedThreadPool`, `Executors.newCachedThreadPool` should not appear in new code. Use `Thread.ofVirtual()` or `Executors.newVirtualThreadPerTaskExecutor()`.
 - Don't call `@Async` methods from within the same class — Spring's AOP proxy is bypassed and the call runs synchronously. Inject the bean or split the methods.
-- Don't enable `spring.threads.virtual.enabled=true` without auditing locks. Heavy `synchronized` use will pin virtual threads to carriers and erase the benefit (and sometimes underperform platform pools).
+- Don't enable `spring.threads.virtual.enabled=true` without auditing locks. Heavy `synchronized` use will pin virtual threads to carriers and erase the benefit. Replace with `ReentrantLock`.
 - Don't `Thread.sleep` on a virtual thread inside a `synchronized` block. The carrier thread is pinned for the duration. Use `LockSupport.parkNanos` or restructure.
-- Don't share a `ThreadPoolTaskExecutor` across unrelated concerns (e.g., HTTP outbound + background batch + email sending). One slow concern starves the others. Define one pool per workload.
-- Don't ignore `RejectedExecutionException`. It's the JVM telling you the pool is saturated — log it, alert on it, and adjust sizing.
+- Don't share a `ThreadPoolTaskExecutor` across unrelated concerns when you do need one (e.g., HTTP outbound + background batch + email). One slow concern starves the others. Define one pool per workload.
+- Don't ignore `RejectedExecutionException`. It's the JVM telling you a bounded pool is saturated — log it, alert on it, and reconsider whether a virtual-thread executor fits better.
 - Don't rely on `ThreadLocal` for request-scoped state in async paths. The `TaskDecorator` boundary is where context lives or dies.
 
 ## Related Skills
