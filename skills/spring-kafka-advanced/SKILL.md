@@ -21,10 +21,8 @@ Production patterns for Spring for Apache Kafka on Boot 4: schemas, exactly-once
 
 ## Do NOT Use This Skill When
 
-- Setting up your **first** producer / consumer pair (`@KafkaListener` basics, `KafkaTemplate.send`) → use `spring-boot-event-driven-patterns`. That skill covers the on-ramp; this one assumes the producer/consumer pair already works.
-- Implementing a **saga** spanning multiple services (compensating actions, orchestration vs choreography) → use `spring-boot-saga-pattern`. Kafka may be the transport, but the saga concern belongs there.
-- Looking for the transactional **outbox** producer pattern → that's covered in `spring-boot-event-driven-patterns`. This skill takes it as a given.
-- Building **inbound HTTP routing** at the edge → use `spring-cloud-gateway`. Kafka is not an HTTP gateway.
+- Sagas spanning multiple services (compensating actions, orchestration vs choreography) — out of scope for the current plugin cut; treat as application-level orchestration.
+- Inbound HTTP routing at the edge — out of scope. Kafka is not an HTTP gateway.
 
 ## When to Read References
 
@@ -275,8 +273,7 @@ class OrderPipelineTest {
 
 ## Related Skills
 
-- `spring-boot-event-driven-patterns` — Basic producer/consumer setup, transactional outbox. Read first if Kafka is new to the project.
-- `spring-boot-saga-pattern` — Multi-service workflows on top of Kafka transport.
 - `spring-boot-resilience4j` — Retries / circuit breakers around the **producer** side (e.g., wrapping `KafkaTemplate.send` calls into the broker).
 - `spring-opentelemetry-tracing` — Kafka client instrumentation propagates W3C trace headers across topic hops.
-- `spring-cloud-discovery-config` — Bootstrap servers and schema registry URLs externalized via Config Server.
+- `spring-async-concurrency` — Listener container concurrency vs application-level virtual-thread executors.
+- `core-setup` — Externalizing bootstrap servers, schema registry URLs, and credentials via env vars in `application.yml`.

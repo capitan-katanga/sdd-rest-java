@@ -57,7 +57,7 @@ list available skills, agents, and slash commands from sdd-rest-java
 ```
 
 You should see:
-- 41 skills (including `spring-boot-rest-api-standards`, `spring-mvc-testing`, `core-setup`, …)
+- 29 skills (including `core-setup`, `spring-data-jpa`, `spring-mvc-testing`, `spring-async-concurrency`, …)
 - 7 agents (`spring-boot-backend-development-expert`, `spring-boot-code-review-expert`, …)
 - 11 slash commands prefixed `sddrest.` (`sddrest.generate-crud`, `sddrest.security-review`, …)
 
@@ -74,7 +74,7 @@ print('plugin.json OK:', len(m['skills']), 'skills,', len(m['agents']), 'agents,
 "
 ```
 
-Expected output: `plugin.json OK: 41 skills, 7 agents, 11 commands`.
+Expected output: `plugin.json OK: 29 skills, 7 agents, 11 commands`.
 
 ## Post-install smoke test
 
@@ -84,7 +84,7 @@ Inside an actual Spring Boot 4.x project, ask Claude:
 create a REST /orders endpoint with CRUD, JPA persistence, and unit + slice tests
 ```
 
-Confirm in Claude's response that it loaded the relevant skills (e.g., `spring-boot-rest-api-standards`, `spring-boot-crud-patterns`, `spring-data-jpa`, `spring-mvc-testing`, `spring-jpa-testing`). If those triggers do not fire, the plugin is not installed correctly — re-check the path in `settings.json`.
+Confirm in Claude's response that it loaded the relevant skills (e.g., `spring-data-jpa`, `spring-mvc-testing`, `spring-jpa-testing`, `spring-boot-dependency-injection`). If those triggers do not fire, the plugin is not installed correctly — re-check the path in `settings.json`.
 
 ## Uninstalling
 

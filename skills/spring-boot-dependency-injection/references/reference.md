@@ -628,7 +628,7 @@ class UserControllerTest {
 
 ### Related Skills
 - **spring-testing-fundamentals/SKILL.md** - Testing with DI (Spring context, slice-vs-unit decisions)
-- **spring-boot-rest-api-standards/SKILL.md** - REST layer with DI
+- **spring-data-jpa/SKILL.md** - Persistence layer collaborators (`JpaRepository`, `EntityManager`)
 
 ### Books
 - "Spring in Action" (latest edition)

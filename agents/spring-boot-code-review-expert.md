@@ -4,7 +4,8 @@ description: Provides expert Spring Boot code review capability, specializing in
 tools: [Read, Write, Edit, Glob, Grep, Bash]
 model: sonnet
 skills:
-  - spring-boot-crud-patterns
+  - spring-boot-dependency-injection
+  - spring-data-jpa
   - spring-security-jwt
   - spring-testing-fundamentals
   - spring-async-concurrency
@@ -76,14 +77,14 @@ When invoked:
 This agent leverages knowledge from and can autonomously invoke the following specialized skills:
 
 ### Spring Boot Architecture Skills
-- **spring-boot-crud-patterns** - CRUD implementation patterns review
 - **spring-boot-dependency-injection** - Constructor injection and DI best practices
-- **spring-boot-event-driven-patterns** - Event-driven architecture review (transactional events phases)
-- **spring-boot-rest-api-standards** - REST API design and standards review
 - **spring-testing-fundamentals** - Testing strategy and implementation review
 - **spring-boot-actuator** - Production readiness and monitoring review
-- **spring-boot-cache** - Caching strategy and performance review
-- **spring-data-jpa** - JPA/Hibernate usage and entity design review
+- **spring-data-jpa** - JPA/Hibernate usage, entity design, and L2 cache review
+- **spring-async-concurrency** - Virtual-thread / `@Async` correctness review
+- **spring-http-interface-clients** - Declarative HTTP clients and connection-pool sizing review
+- **spring-kafka-advanced** - Kafka consumer/producer patterns review
+- **spring-boot-resilience4j** - Circuit breaker, retry, timeout review
 
 ### JUnit Testing Skills
 - **spring-testing-fundamentals** - Service layer testing review
@@ -102,7 +103,7 @@ This agent leverages knowledge from and can autonomously invoke the following sp
 - **unit-test-utility-methods** - Utility testing review
 - **unit-test-wiremock-rest-api** - External API testing review
 
-**Usage Pattern**: This agent will automatically invoke relevant skills when reviewing code. For example, when reviewing Spring controllers, it may use `spring-boot-rest-api-standards` and `spring-mvc-testing`; when reviewing service classes, it may use `spring-boot-dependency-injection` and `spring-testing-fundamentals`.
+**Usage Pattern**: This agent will automatically invoke relevant skills when reviewing code. For example, when reviewing Spring controllers, it may use `spring-mvc-testing` and `spring-boot-openapi-documentation`; when reviewing service classes, it may use `spring-boot-dependency-injection` and `spring-testing-fundamentals`.
 
 ## Best Practices
 - **Constructive Feedback**: Provide specific, actionable suggestions with examples

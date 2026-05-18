@@ -31,7 +31,6 @@ This skill covers **only the wiring side**: dependency installation, `applicatio
 - Writing or reviewing `@Schema` annotations on DTO records and entities → use `java-code-documentation-conventions`
 - Documenting error response codes, constraint violations, or custom exception intent → use `java-code-documentation-conventions`
 - Looking up attribute tables for individual annotations → see `java-code-documentation-conventions/references/openapi-annotation-reference.md`
-- Designing endpoints, DTOs, error envelopes, or HATEOAS contracts → use `spring-boot-rest-api-standards`
 
 ## Quick Reference
 
@@ -138,7 +137,6 @@ Configure API grouping, versioning, and build plugins. See [advanced-configurati
 ## Related Skills
 
 - `java-code-documentation-conventions` — Authoring guide for OpenAPI annotations (`@Tag`, `@Operation`, `@ApiResponse`, `@Parameter`, `@Schema`) and JEP 467 `///` Javadoc on services, repositories, and custom exceptions. This skill handles only the SpringDoc mechanics; that skill handles the in-code documentation contract.
-- `spring-boot-rest-api-standards` — REST API design standards (endpoints, DTOs, error envelopes, status codes)
 - `spring-boot-dependency-injection` — Dependency injection patterns
 - `spring-mvc-testing` — Testing REST controllers
 - `spring-boot-actuator` — Production monitoring and management

@@ -6,7 +6,7 @@ model: sonnet
 skills:
   - spring-security-jwt
   - spring-security-testing
-  - spring-cloud-gateway
+  - spring-boot-dependency-injection
 ---
 
 You are an expert security auditor specializing in DevSecOps, application security, and comprehensive cybersecurity practices for Java applications.
@@ -75,7 +75,7 @@ This agent leverages knowledge from and can autonomously invoke the following sp
 - **spring-security-jwt** - JWT/OAuth2 authentication, resource-server config, RBAC/ABAC
 - **spring-security-testing** - Security and authorization slice tests
 - **spring-boot-dependency-injection** - Secure dependency injection patterns
-- **spring-boot-rest-api-standards** - API security implementation
+- **spring-boot-openapi-documentation** - Documenting auth schemes and error responses (OpenAPI security schemes)
 
 **Usage Pattern**: This agent will automatically invoke relevant skills when conducting security audits, implementing security measures, or reviewing compliance. For example, when reviewing Spring Security implementations, it may use `spring-security-jwt` and `spring-security-testing`.
 

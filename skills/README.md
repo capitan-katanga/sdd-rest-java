@@ -4,19 +4,17 @@
 
 Task-scoped knowledge packs, each in its own subdirectory. A skill bundles concrete instructions, code templates, and references for one well-defined task — *write a Spring MVC slice test*, *configure a Spring Cloud Config Server*, *containerize with a multi-stage Dockerfile*. This is where the bulk of the plugin's domain knowledge lives.
 
-Categories (41 skills total):
-- **Foundations** — `core-setup`, `spring-boot-project-creator`, `spring-boot-dependency-injection`
-- **REST & web** — `spring-boot-rest-api-standards`, `spring-boot-crud-patterns`, `spring-boot-actuator`
+Categories (29 skills total):
+- **Foundations** — `core-setup`, `spring-boot-dependency-injection`
 - **API documentation** — `spring-boot-openapi-documentation` (SpringDoc wiring), `java-code-documentation-conventions` (authoring patterns, Javadoc/OpenAPI layer split)
-- **Reliability** — `spring-boot-cache`, `spring-boot-resilience4j`, `spring-boot-event-driven-patterns`, `spring-boot-saga-pattern`
-- **Persistence** — `spring-data-jpa`, `spring-data-neo4j`
+- **Operations** — `spring-boot-actuator`, `spring-boot-resilience4j`
+- **Persistence** — `spring-data-jpa` (Spring Data JPA + Hibernate L2 cache)
 - **Security** — `spring-security-jwt`
-- **Spring Cloud microservices** — `spring-cloud-discovery-config`, `spring-cloud-gateway`, `spring-http-interface-clients`
+- **Outbound HTTP** — `spring-http-interface-clients` (declarative `@HttpExchange` clients over Apache HttpClient 5)
 - **Messaging** — `spring-kafka-advanced`
-- **Concurrency** — `spring-async-concurrency`
-- **Container / runtime** — `containerization-docker`
+- **Concurrency** — `spring-async-concurrency` (virtual threads first)
 - **Observability** — `observability-logging`, `spring-opentelemetry-tracing`
-- **Testing slices** — `spring-testing-fundamentals`, `spring-jpa-testing`, `spring-mvc-testing`, `spring-security-testing`, `spring-webflux-testing`, `spring-websocket-testing`
+- **Testing slices** — `spring-testing-fundamentals`, `spring-jpa-testing`, `spring-mvc-testing`, `spring-security-testing`
 - **Unit-test recipes** — `unit-test-application-events`, `unit-test-bean-validation`, `unit-test-boundary-conditions`, `unit-test-caching`, `unit-test-config-properties`, `unit-test-json-serialization`, `unit-test-mapper-converter`, `unit-test-parameterized`, `unit-test-scheduled-async`, `unit-test-utility-methods`, `unit-test-wiremock-rest-api`, `wiremock-standalone-docker`
 
 ## Loading model — the most important section
@@ -124,7 +122,7 @@ If you are **merging** the skill into another (rather than discarding its conten
 ## Things worth knowing
 
 - **The description is the only routing input.** Edit it deliberately. Re-test triggers in a fresh conversation after edits.
-- **`Do NOT Use This Skill When`** is the cheapest fix when two skills compete for the same triggers — explicitly hand off the territory. We rely on this for the testing skills (`mvc` vs `security` vs `webflux` vs `websocket`).
+- **`Do NOT Use This Skill When`** is the cheapest fix when two skills compete for the same triggers — explicitly hand off the territory. We rely on this for the testing skills (`mvc` vs `security` vs `jpa`).
 - **References are not magic.** A `references/foo.md` that the SKILL.md doesn't cite by path will never be read.
 - **Bump `version`** in the frontmatter when you make a meaningful change to a SKILL.md. Helps you (and consumers) track behavior shifts.
 - **Don't hand-edit `plugin.json` for bulk changes.** When the plugin grows, write a small script that lists `skills/*/` and rewrites the array.

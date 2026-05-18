@@ -52,7 +52,7 @@ $3 specifies target version for specific dependency upgrades (optional):
 
 - Primary: `java-security-expert`
 - If not available: Use `developer-kit:java-security-expert` or fallback to `general-purpose` agent with
-  `spring-boot-crud-patterns` skill
+  `core-setup` skill
 
 ## Context
 

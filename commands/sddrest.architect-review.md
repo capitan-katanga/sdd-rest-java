@@ -31,7 +31,7 @@ Domain-Driven Design patterns, and Spring Boot best practices.
 
 - Primary: `java-software-architect-review`
 - If not available: Use `developer-kit:java-software-architect-review` or fallback to `general-purpose` agent with
-  `spring-boot-crud-patterns` skill
+  `spring-boot-dependency-injection` skill
 
 ## Context
 

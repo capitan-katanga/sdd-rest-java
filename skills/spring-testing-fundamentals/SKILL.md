@@ -23,8 +23,6 @@ You need domain-specific patterns:
 - Testing JPA repositories, Testcontainers, `@DataJpaTest` → use `spring-jpa-testing`
 - Testing REST controllers, MockMvc, `@WebMvcTest` → use `spring-mvc-testing`
 - Testing security, `@WithMockUser`, JWT, OAuth2 → use `spring-security-testing`
-- Testing reactive controllers, `@WebFluxTest`, `StepVerifier` → use `spring-webflux-testing`
-- Testing WebSocket/STOMP → use `spring-websocket-testing`
 
 ## When to Read References
 

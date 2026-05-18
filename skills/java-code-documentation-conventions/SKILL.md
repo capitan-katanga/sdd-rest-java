@@ -30,7 +30,6 @@ This skill does **not** cover SpringDoc dependency setup, Swagger UI configurati
 ## Do NOT Use This Skill When
 
 - Setting up springdoc-openapi dependency, Swagger UI config, security scheme **wiring**, or pagination **plumbing** → use `spring-boot-openapi-documentation` (mechanics only)
-- Designing endpoints, DTOs, error envelopes, status codes, HATEOAS, or pagination contracts → use `spring-boot-rest-api-standards`
 - Implementing `@Query` JPA mechanics (JPQL/native syntax, projections, locking) → use `spring-data-jpa`
 - Documenting private, package-private, or test-internal code — this skill targets public API surface only
 - Writing external documentation artifacts (ADRs, C4 diagrams, deployment runbooks, multi-audience manuals)
@@ -203,7 +202,6 @@ Full versions live in [controller-javadoc-openapi-pattern.md](references/control
 ## Related Skills
 
 - `spring-boot-openapi-documentation` — SpringDoc **wiring/mechanics only**: dependency setup, `application.yml`, Swagger UI configuration, `SecurityScheme` bean configuration, pagination plumbing, build integration, API groups, troubleshooting, `@RestControllerAdvice` handler wiring. The complement to this skill — that one wires the spec generator, this one writes the annotations.
-- `spring-boot-rest-api-standards` — REST API design (endpoints, DTOs, error envelopes, status codes). Decides the contract; this skill documents it.
 - `spring-data-jpa` — `@Query`, `@Modifying`, locking, projections mechanics. This skill documents intent; that skill implements it.
 
 ## External Resources

@@ -143,13 +143,13 @@ try (BaggageInScope b = tracer.createBaggageInScope("x-tenant-id", "acme-co")) {
 
 ## Examples
 
-### Spring Cloud Gateway → backend service (W3C propagation, no manual code)
+### Service-to-service via `@HttpExchange` (W3C propagation, no manual code)
 ```yaml
 # Both services use the same config:
 management.tracing.propagation.type: w3c
 management.otlp.tracing.endpoint: http://otel-collector:4318/v1/traces
 ```
-A request through `spring-cloud-gateway` carries `traceparent` to the downstream service. Downstream's auto-instrumentation reads it, makes its own span a child, and the entire trace shows up end-to-end in your backend. No code required.
+A `RestClient` built through Boot's auto-configured `RestClient.Builder` carries `traceparent` on outbound calls. The downstream service's auto-instrumentation reads it, makes its own span a child, and the entire trace shows up end-to-end in your backend. No code required.
 
 ### Kafka — trace continues across topics
 With `micrometer-tracing-bridge-otel` and `spring-kafka` on the classpath, `KafkaTemplate.send` injects `traceparent` into record headers and `@KafkaListener` reads it back. The span graph spans producer → broker → consumer naturally.
@@ -199,6 +199,5 @@ For Spring's `@Async` executor, configure a `TaskDecorator` that calls `ContextS
 - `observability-logging` — `traceId`/`spanId` MDC integration; structured JSON logs that include trace context.
 - `spring-boot-actuator` — Metrics side of Micrometer; same `ObservationRegistry`, different signal.
 - `spring-async-concurrency` — `ContextSnapshot` / `TaskDecorator` for propagating trace context across thread boundaries.
-- `spring-cloud-gateway` — End-to-end trace propagation through the edge.
-- `spring-http-interface-clients` — Outbound HTTP calls are auto-instrumented when `RestClient`/`WebClient` is built through Boot's auto-configured builder.
+- `spring-http-interface-clients` — Outbound HTTP calls are auto-instrumented when `RestClient` is built through Boot's auto-configured builder.
 - `spring-kafka-advanced` — Trace propagation across Kafka topic hops.

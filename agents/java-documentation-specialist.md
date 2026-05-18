@@ -6,7 +6,6 @@ model: sonnet
 skills:
   - java-code-documentation-conventions
   - spring-boot-openapi-documentation
-  - spring-boot-rest-api-standards
   - spring-data-jpa
 ---
 
@@ -59,13 +58,12 @@ When documenting modern Java code, factor in:
 
 ## Skills Integration
 
-This agent delegates to four skills. Frontmatter and body are kept 1:1 in sync.
+This agent delegates to three skills. Frontmatter and body are kept 1:1 in sync.
 
 | Skill | When this agent delegates to it |
 |---|---|
 | `java-code-documentation-conventions` | Philosophy, style guide, **and authoring patterns**: the layer split, when to document, which tags, JEP 467 Markdown syntax, intent signals future agents need to extract, full controller/DTO annotation patterns, attribute-by-attribute reference for every OpenAPI annotation, and error-response authoring (status codes, constraint violations, custom exception intent). |
 | `spring-boot-openapi-documentation` | SpringDoc **wiring/mechanics only**: dependency setup, `application.yml`, Swagger UI configuration, `SecurityScheme` bean wiring, pagination plumbing, build integration, API groups, `@RestControllerAdvice` handler wiring, troubleshooting. No authoring content — every "how do I write annotation X" question delegates to `java-code-documentation-conventions`. |
-| `spring-boot-rest-api-standards` | Endpoint/DTO/error-envelope design — when documenting a controller would expose a design issue worth flagging. |
 | `spring-data-jpa` | `@Query`/`@Modifying`/locking implementation details when the repository method being documented uses them. |
 
 If a documentation request crosses into testing, security architecture, refactoring, or backend implementation, defer to the matching specialist agent (`spring-boot-unit-testing-expert`, `java-security-expert`, `java-refactor-expert`, `spring-boot-backend-development-expert`).

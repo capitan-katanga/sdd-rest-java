@@ -20,7 +20,6 @@ license: Apache-2.0
 
 - Adding metrics or distributed tracing — covered by `spring-boot-actuator` (Micrometer, observation API)
 - Configuring Spring profiles or properties in general → use `core-setup`
-- Deploying a logging sidecar in containers → use `containerization-docker`
 - Configuring distributed tracing spans / OTLP exporters → use `spring-opentelemetry-tracing`
 
 ## When to Read References

@@ -19,9 +19,7 @@ license: Apache-2.0
 ## Do NOT Use This Skill When
 
 - Testing authentication, authorization, CSRF, JWT, or OAuth2 specifically → use `spring-security-testing`
-- Testing reactive endpoints (`WebFlux`, `WebClient`, SSE) → use `spring-webflux-testing`
 - Testing JPA repositories or database persistence → use `spring-jpa-testing`
-- Testing WebSocket or STOMP messaging → use `spring-websocket-testing`
 - Writing pure unit tests without a Spring context → use `spring-testing-fundamentals`
 
 ## When to Read References

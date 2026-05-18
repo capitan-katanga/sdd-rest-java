@@ -55,7 +55,6 @@ See `references/transactional-tests.md` for full patterns including @Modifying b
 
 - Testing REST controllers or HTTP endpoints → use `spring-mvc-testing`
 - Testing authentication, authorization, CSRF, JWT, or OAuth2 → use `spring-security-testing`
-- Testing reactive repositories (R2DBC) or WebClient → use `spring-webflux-testing`
 - Writing pure unit tests without a Spring context → use `spring-testing-fundamentals`
 - Setting up AssertJ assertions or Mockito stubs → use `spring-testing-fundamentals`
 

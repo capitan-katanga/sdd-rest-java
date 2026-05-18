@@ -1257,7 +1257,7 @@ public class Transaction {
 public class AuditLog {
     @Id
     @UuidGenerator
-    private UUID id;  // Native UUID type (PostgreSQL, etc.)
+    private UUID id;  // Native UUID type where supported by the JDBC driver
 
     @Column(name = "entity_id", length = 36)  // May need VARCHAR for MySQL
     private String entityId;  // Foreign key as string for compatibility
@@ -2054,29 +2054,29 @@ public class ProductsDbConfig {
 
     private Properties hibernateProperties() {
         Properties properties = new Properties();
-        properties.setProperty("hibernate.dialect",
-            "org.hibernate.dialect.PostgreSQLDialect");
-        properties.setProperty("hibernate.hbm2ddl.auto", "update");
+        properties.setProperty("hibernate.hbm2ddl.auto", "validate");
         properties.setProperty("hibernate.show_sql", "false");
         return properties;
     }
 }
 ```
 
-#### Properties Configuration
-```properties
-# users.properties
-users.datasource.url=jdbc:mysql://localhost:3306/users_db
-users.datasource.username=root
-users.datasource.password=password
-users.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+#### YAML Configuration
+```yaml
+users:
+  datasource:
+    url: ${USERS_DATASOURCE_URL}
+    username: ${USERS_DATASOURCE_USERNAME}
+    password: ${USERS_DATASOURCE_PASSWORD}
 
-# products.properties
-products.datasource.url=jdbc:postgresql://localhost:5432/products_db
-products.datasource.username=postgres
-products.datasource.password=postgres
-products.datasource.driver-class-name=org.postgresql.Driver
+products:
+  datasource:
+    url: ${PRODUCTS_DATASOURCE_URL}
+    username: ${PRODUCTS_DATASOURCE_USERNAME}
+    password: ${PRODUCTS_DATASOURCE_PASSWORD}
 ```
+
+The JDBC driver and Hibernate dialect are auto-detected by Spring Boot from the JDBC URL — do not hard-code them in code or YAML.
 
 ### Entity Configuration for Multiple Databases
 
@@ -2377,16 +2377,12 @@ public class HibernateConfig {
     @Bean
     @Primary
     public HibernateJpaVendorAdapter primaryJpaVendorAdapter() {
-        HibernateJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
-        adapter.setDatabasePlatform("org.hibernate.dialect.MySQL8Dialect");
-        return adapter;
+        return new HibernateJpaVendorAdapter();
     }
 
     @Bean
     public HibernateJpaVendorAdapter secondaryJpaVendorAdapter() {
-        HibernateJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
-        adapter.setDatabasePlatform("org.hibernate.dialect.PostgreSQLDialect");
-        return adapter;
+        return new HibernateJpaVendorAdapter();
     }
 
     @Bean

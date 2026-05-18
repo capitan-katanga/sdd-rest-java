@@ -19,10 +19,9 @@ license: Apache-2.0
 
 ## Do NOT Use This Skill When
 
-- The project is already on Spring Boot 4 with proper `application.yml` and configuration → load topic-specific skills (e.g., `spring-boot-rest-api-standards`, `spring-data-jpa`)
+- The project is already on Spring Boot 4 with proper `application.yml` and configuration → load topic-specific skills (e.g., `spring-data-jpa`, `spring-security-jwt`)
 - Configuring logging → use `observability-logging`
 - Configuring security → use `spring-security-jwt`
-- Setting up Spring Cloud Config Server → use `spring-cloud-discovery-config`
 - Writing tests → use `spring-testing-fundamentals` and friends
 
 ## Configuration Philosophy

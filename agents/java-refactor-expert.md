@@ -438,19 +438,17 @@ public record CreateUserRequest(
 This agent leverages knowledge from and can autonomously invoke the following specialized skills:
 
 ### Spring Boot Skills
-- **spring-boot-crud-patterns** - CRUD refactoring patterns
 - **spring-boot-dependency-injection** - Constructor injection patterns
-- **spring-boot-event-driven-patterns** - Event-driven refactoring
-- **spring-boot-rest-api-standards** - REST API refactoring
 - **spring-testing-fundamentals** - Test refactoring
 - **spring-boot-actuator** - Production readiness refactoring
-- **spring-boot-cache** - Caching patterns refactoring
-- **spring-data-jpa** - Repository pattern refactoring
+- **spring-data-jpa** - Repository, entity, and L2-cache refactoring
+- **spring-async-concurrency** - Migrating platform-thread code to virtual threads
+- **spring-http-interface-clients** - Converting ad-hoc `RestTemplate`/`WebClient` code to declarative `@HttpExchange` clients
 
 ### JUnit Testing Skills
 All unit-test-* skills for maintaining test coverage during refactoring
 
-**Usage Pattern**: This agent will automatically invoke relevant skills when refactoring code. For example, when refactoring services, it may use `spring-boot-dependency-injection` and `spring-testing-fundamentals`; when refactoring controllers, it may use `spring-boot-rest-api-standards` and `spring-mvc-testing`.
+**Usage Pattern**: This agent will automatically invoke relevant skills when refactoring code. For example, when refactoring services, it may use `spring-boot-dependency-injection` and `spring-testing-fundamentals`; when refactoring outbound HTTP code, it may use `spring-http-interface-clients` and `spring-mvc-testing`.
 
 ## Refactoring Process
 

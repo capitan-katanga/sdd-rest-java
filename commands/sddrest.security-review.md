@@ -61,7 +61,7 @@ Target: $ARGUMENTS
 
 - Primary: `java-security-expert`
 - If not available: Use `developer-kit:java-security-expert` or fallback to `general-purpose` agent with
-  `spring-boot-crud-patterns` skill
+  `spring-security-jwt` skill
 
 ## Security Analysis for Java Enterprise Applications
 

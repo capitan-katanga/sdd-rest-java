@@ -36,7 +36,7 @@ description: >                 # how Claude decides when to suggest this agent
 tools: [Read, Write, Edit, Glob, Grep, Bash]   # tool allowlist for this agent
 model: sonnet                  # opus | sonnet | haiku | inherit
 skills:                        # skills this agent should be primed on
-  - spring-boot-crud-patterns
+  - spring-data-jpa
   - spring-boot-dependency-injection
 ---
 

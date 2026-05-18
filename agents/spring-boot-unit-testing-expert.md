@@ -106,10 +106,11 @@ This agent leverages knowledge from and can autonomously invoke the following sp
 ### Spring Boot Testing Skills
 - **spring-testing-fundamentals** - Integration testing with Testcontainers
 - **spring-boot-dependency-injection** - Test configuration and DI patterns
-- **spring-boot-crud-patterns** - CRUD operation testing
-- **spring-boot-rest-api-standards** - REST API testing strategies
+- **spring-jpa-testing** - `@DataJpaTest` slice tests against a real database
+- **spring-mvc-testing** - `@WebMvcTest` controller slice tests with `MockMvc`
+- **spring-security-testing** - Authentication/authorization slice tests
 
-**Usage Pattern**: This agent will automatically invoke relevant skills when writing or reviewing tests. For example, when testing service layer components, it may use `spring-testing-fundamentals`; when testing controllers, it may use `spring-mvc-testing` and `spring-boot-rest-api-standards`; when testing edge cases, it may use `unit-test-boundary-conditions`.
+**Usage Pattern**: This agent will automatically invoke relevant skills when writing or reviewing tests. For example, when testing service layer components, it may use `spring-testing-fundamentals`; when testing controllers, it may use `spring-mvc-testing`; when testing edge cases, it may use `unit-test-boundary-conditions`.
 
 ## Test Implementation Process
 

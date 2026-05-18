@@ -185,5 +185,5 @@ Use `@Primary` for the default path and `@Qualifier` only where a specific varia
 
 ## Related Skills
 
-- `spring-boot-rest-api-standards`
 - `spring-testing-fundamentals`
+- `spring-data-jpa`

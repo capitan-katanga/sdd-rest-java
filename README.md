@@ -39,7 +39,7 @@ The skill `description` is the filter. References inside a skill's `references/`
 
 Inside any Spring Boot 4.x project, three modes — least to most explicit:
 
-1. **Implicit (the main one).** Just describe the work: *"add a REST `/orders` endpoint with CRUD + tests"*. Claude detects triggers and loads `spring-boot-rest-api-standards`, `spring-boot-crud-patterns`, `spring-data-jpa`, `spring-mvc-testing`, `spring-jpa-testing` automatically.
+1. **Implicit (the main one).** Just describe the work: *"add a REST `/orders` endpoint backed by JPA with tests"*. Claude detects triggers and loads `spring-data-jpa`, `spring-mvc-testing`, `spring-jpa-testing`, `spring-boot-dependency-injection`, etc. automatically.
 
 2. **Slash commands** for predefined flows:
    ```

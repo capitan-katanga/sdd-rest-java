@@ -360,7 +360,7 @@ See [references/examples.md](references/examples.md) for complete entity models 
 ## Related Skills
 
 - `spring-boot-dependency-injection` — Constructor injection patterns used throughout
-- `spring-boot-rest-api-standards` — REST API security patterns and error handling
+- `spring-boot-openapi-documentation` — Documenting security schemes and protected endpoints in OpenAPI
 - `spring-security-testing` — Testing Spring Security configurations (auth + authorization slice tests)
 - `spring-data-jpa` — User entity and repository patterns
 - `spring-boot-actuator` — Security monitoring and health endpoints

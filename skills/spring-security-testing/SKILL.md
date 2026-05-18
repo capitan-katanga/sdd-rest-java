@@ -19,7 +19,6 @@ license: Apache-2.0
 ## Do NOT Use This Skill When
 
 - Testing REST controller HTTP behavior (status codes, JSON body, headers) without security focus → use `spring-mvc-testing`
-- Testing reactive endpoints with security → use `spring-webflux-testing`
 - Testing JPA repositories → use `spring-jpa-testing`
 - Writing pure unit tests for service logic without security context → use `spring-testing-fundamentals`
 

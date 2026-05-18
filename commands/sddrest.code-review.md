@@ -37,7 +37,7 @@ practices analysis. Use when reviewing code changes or before merging pull reque
 
 - Primary: `sdd-rest-java:spring-boot-code-review-expert`
 - If not available: Use `sdd-rest-java:spring-boot-code-review-expert` or fallback to `general-purpose` agent with
-  `spring-boot-crud-patterns` skill
+  `spring-boot-dependency-injection` skill
 
 ## Review Configuration
 

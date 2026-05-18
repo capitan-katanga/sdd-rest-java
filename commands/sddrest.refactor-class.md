@@ -39,7 +39,7 @@ refactoring large or complex Java classes.
 
 - Primary: `sdd-rest-java:java-refactor-expert`
 - If not available: Use `sdd-rest-java:java-refactor-expert` or fallback to `general-purpose` agent with
-  `spring-boot-crud-patterns` skill
+  `spring-boot-dependency-injection` skill
 
 ## Refactoring Configuration
 
@@ -294,10 +294,10 @@ public ResponseEntity<List<UserDto>> getAllUsers() {
 
 This command works best with these skills:
 
-- **spring-boot-crud-patterns**: For CRUD refactoring
+- **spring-data-jpa**: For repository, entity, and L2-cache refactoring
 - **spring-testing-fundamentals**: For test improvements
-- **spring-boot-rest-api-standards**: For API refactoring
-- **spring-testing-fundamentals**: For service layer testing
+- **spring-http-interface-clients**: For migrating ad-hoc outbound HTTP code to `@HttpExchange`
+- **spring-async-concurrency**: For migrating platform-thread code to virtual threads
 
 ## Safety and Validation
 

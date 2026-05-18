@@ -349,12 +349,10 @@ This command leverages the following skills available in the repository:
 
 ### Spring Boot Skills
 
-- **spring-boot-rest-api-standards** - REST API design patterns to test
-- **spring-boot-crud-patterns** - CRUD operation patterns to test
-- **spring-boot-cache** - Caching strategies with Spring Cache
 - **spring-boot-dependency-injection** - Constructor injection patterns
-- **spring-boot-event-driven-patterns** - Event-driven architecture testing
-- **spring-data-jpa** - JPA repository patterns
+- **spring-data-jpa** - JPA repository patterns and Hibernate L2 cache
+- **spring-http-interface-clients** - Declarative HTTP clients (testable contract surface)
+- **spring-kafka-advanced** - Kafka consumer/producer patterns
 
 ### Important Notes
 
